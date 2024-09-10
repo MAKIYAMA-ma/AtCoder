@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 // 配列の要素を交換する関数
 void swap(int* a, int* b)
@@ -36,9 +37,9 @@ void quickSort(int arr[], int low, int high)
     }
 }
 
-unsigned int max(unsigned int arr[], int num)
+int max(int arr[], int num)
 {
-    unsigned int mx = arr[0];
+    int mx = arr[0];
     int i;
     for(i = 0; i < num; i++) {
         if(mx < arr[i]) {
@@ -48,9 +49,9 @@ unsigned int max(unsigned int arr[], int num)
     return mx;
 }
 
-unsigned int min(unsigned int arr[], int num)
+int min(int arr[], int num)
 {
-    unsigned int mn = arr[0];
+    int mn = arr[0];
     int i;
     for(i = 0; i < num; i++) {
         if(mn > arr[i]) {
@@ -60,7 +61,7 @@ unsigned int min(unsigned int arr[], int num)
     return mn;
 }
 
-void printArray(unsigned int arr[], int size)
+void printArray(int arr[], int size)
 {
     for (int i = 0; i < size; i++) {
         printf("%u ", arr[i]);
@@ -68,20 +69,27 @@ void printArray(unsigned int arr[], int size)
     printf("\n");
 }
 
+int cmp(const void *a, const void *b)
+{
+    return *(int*)a - *(int*)b;
+}
+
 int main (void)
 {
     int n;
-    unsigned int a, b;
+    int a, b;
     int i, j;
     int today;
 
     scanf("%d %u %u", &n, &a, &b);
-    unsigned int d[n];
+    int d[n];
     for(i = 0; i < n; i++) {
         scanf("%u", &d[i]);
         d[i] = (d[i]%(a+b));
     }
-    quickSort(d, 0, n-1);
+    /* quickSort(d, 0, n-1); */
+    qsort(d, n, sizeof(int), cmp);
+
     /* printArray(d, n); */
 
 #if 1
