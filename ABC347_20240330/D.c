@@ -76,8 +76,6 @@ int main(void)
 {
     int a, b;
     int i;
-    int cpc;
-    int mx;
     unsigned long long C, x, y;
 
     scanf("%d %d %llu", &a, &b, &C);
@@ -87,11 +85,6 @@ int main(void)
         x = (x<<1)|0x01;
     }
 
-    cpc = popcount(C);
-    /* mx = max_x(a, b, cpc, C); */
-    /* printf("mx:[%llu]\n", mx); */
-    /* printf("mx:[%llu]\n", power(2, min(a+b+cpc, 60))); */
-
     do {
         y = x ^ C;
         /* printf("%llu %llu\n", x, y); */
@@ -100,8 +93,7 @@ int main(void)
             return 0;
         }
         x = next_popcount(x);
-    /* } while(x < mx); */
-    } while(x < power(2, min(a+b+cpc, 60)));
+    } while(x < power(2, 60));
 
     printf("-1\n");
     return 0;
