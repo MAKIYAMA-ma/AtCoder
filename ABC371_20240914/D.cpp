@@ -32,16 +32,17 @@ int main() {
                 });
         auto rp = lower_bound(d.begin(), d.end(), r,
                 [](const pair<int, int>& a, int value) {
-                return a.first < value;
+                return a.first <= value;
                 });
         if (lp == d.end()) {
             cout << 0 << endl;
         } else {
-            if((lp-1)->first == l) lp--;
+            /* cout << "range:" << lp->first << " " << rp->first << endl; */
             int total_sum = accumulate(lp, rp, 0, [](int sum, const pair<int, int>& p) {
                     return sum + p.second;
                     });
-            cout << "ans:" << total_sum << endl;
+            /* cout << "ans:" << total_sum << endl; */
+            cout << total_sum << endl;
         }
     }
 }
