@@ -202,6 +202,22 @@ void free_sorted_array(SortedArray *arr)
     free(arr);
 }
 
+void print_cell(SortedArray **harr, SortedArray **warr, int h, int w)
+{
+    int k;
+
+    printf("------------------\n");
+    printf("harr:\n");
+    for(k = 0; k < h; k++) {
+        print_sorted_array(harr[k]);
+    }
+    printf("warr:\n");
+    for(k = 0; k < w; k++) {
+        print_sorted_array(warr[k]);
+    }
+    printf("------------------\n");
+}
+
 int main(void)
 {
     int h, w, q;
@@ -229,16 +245,7 @@ int main(void)
         }
     }
 
-    /* printf("------------------\n"); */
-    /* printf("harr:\n"); */
-    /* for(k = 0; k < h; k++) { */
-    /*     print_sorted_array(harr[k]); */
-    /* } */
-    /* printf("warr:\n"); */
-    /* for(k = 0; k < w; k++) { */
-    /*     print_sorted_array(warr[k]); */
-    /* } */
-    /* printf("------------------\n"); */
+    print_cell(harr, warr, h, w);
 
     // クエリ処理
     for(i = 0; i < q; i++) {
@@ -248,7 +255,7 @@ int main(void)
         if(harr[r-1]->size > 0) {
             // 列方向にカベが残っている
             int hind = find_closest_below_or_equal(harr[r-1], c);
-            /* printf("hind:%d\n", hind); */
+            printf("hind:%d\n", hind);
             if(hind < 0) {
                 // 発見できず->c以下のマスにはカベがない
                 // c以上の側のマスは削除
@@ -263,6 +270,7 @@ int main(void)
                     delete_index(harr[r-1], hind);
                     delete_value(warr[c-1], r);
                     sum--;
+                    print_cell(harr, warr, h, w);
                     continue;
                 } else {
                     if(hind >= harr[r-1]->size - 1) {
@@ -284,20 +292,11 @@ int main(void)
                 }
             }
         }
-        /* printf("------------------\n"); */
-        /* printf("harr:\n"); */
-        /* for(k = 0; k < h; k++) { */
-        /*     print_sorted_array(harr[k]); */
-        /* } */
-        /* printf("warr:\n"); */
-        /* for(k = 0; k < w; k++) { */
-        /*     print_sorted_array(warr[k]); */
-        /* } */
+        print_cell(harr, warr, h, w);
         // 行方向の処理
-        /* printf("------------------\n"); */
         if(warr[c-1]->size > 0) {
             int wind = find_closest_below_or_equal(warr[c-1], r);
-            /* printf("wind:%d\n", wind); */
+            printf("wind:%d\n", wind);
             // 列方向にカベが残っている
             if(wind < 0) {
                 // 発見できず->c以下のマスにはカベがない
@@ -334,16 +333,7 @@ int main(void)
                 }
             }
         }
-        /* printf("------------------\n"); */
-        /* printf("harr:\n"); */
-        /* for(k = 0; k < h; k++) { */
-        /*     print_sorted_array(harr[k]); */
-        /* } */
-        /* printf("warr:\n"); */
-        /* for(k = 0; k < w; k++) { */
-        /*     print_sorted_array(warr[k]); */
-        /* } */
-        /* printf("------------------\n"); */
+        print_cell(harr, warr, h, w);
     }
 
     printf("%d\n", sum);
