@@ -14,7 +14,12 @@ int main() {
     float ans = 0;
     for(int i = 0; i < n; i++) {
         for(int j = i; j < n; j++) {
-            float tmp = sqrt(pow())
+            float tmp = sqrt(pow(x.at(i) - x.at(j), 2) + pow(y.at(i) - y.at(j), 2));
+            if(ans < tmp) {
+                ans = tmp;
+            }
         }
     }
+
+    cout << ans << endl;
 }
