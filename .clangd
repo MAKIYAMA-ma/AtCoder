@@ -1,0 +1,9 @@
+CompileFlags:
+  Add: 
+    - -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/12/include/c++
+    - -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/12/include/c++/x86_64-pc-cygwin
+    - -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/12/include/c++/backward
+    - -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/12/include
+    - -IC:/cygwin64/usr/local/include
+    - -IC:/cygwin64/usr/include
+    - -IC:/cygwin64/lib/gcc/x86_64-pc-cygwin/12/../../../../lib/../include/w32api
