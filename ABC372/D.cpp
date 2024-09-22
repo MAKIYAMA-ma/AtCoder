@@ -12,4 +12,19 @@ int main() {
     rep(i, n) {
         cin >> h.at(i);
     }
+    vector<int> cnt(n, 0);
+    rep(i, n) {
+        int j;
+        for(j = i-1; j >= 0; j--) {
+            cnt.at(j)++;
+            if(h.at(j) > h.at(i)) {
+                break;
+            }
+        }
+    }
+
+    rep(i, n) {
+        cout << cnt.at(i) << " ";
+    }
+    cout << endl;
 }
