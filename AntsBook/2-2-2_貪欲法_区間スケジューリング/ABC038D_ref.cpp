@@ -47,23 +47,28 @@ int e() { return 0; }
 /* h昇順,w降順ソートで処理 */
 void func1 (void){
     int N;
-    cin>>N;
+    cin >> N;
     vector<pair<int, int>> X(N);
-    for(int i=0;i<N;i++){
-        int w,h;
-        cin>>w>>h;
-        X[i].second = h;
+    rep(i, N) {
+        int w, h;
+        cin >> w >> h;
         X[i].first = w;
+        X[i].second = h;
     }
 
     sort(X.begin(), X.end(), [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
             return (a.first < b.first) || (a.first == b.first && a.second > b.second);
             });
     vector<int> dp(N, 1000000);
-    for(int i=0;i<N;i++){
+    rep(i, N) {
         *lower_bound(dp.begin(), dp.end(), X[i].second) = X[i].second;
+        cout << "L:";
+        rep(j, N) {
+            cout << dp.at(j) << " ";
+        }
+        cout << endl;
     }
-    cout<<lower_bound(dp.begin(), dp.end(), 1000000) - dp.begin()<<endl;
+    cout << lower_bound(dp.begin(), dp.end(), 1000000) - dp.begin() << endl;
 }
 
 int main() {

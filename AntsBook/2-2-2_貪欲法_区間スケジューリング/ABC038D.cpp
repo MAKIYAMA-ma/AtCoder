@@ -5,7 +5,7 @@ using ll = long long;
 #define rep(i, n) for(int i = 0; i < (int)(n); i++)
 #define all(vec) vec.begin(), vec.end()
 
-int main() {
+void func0(void) {
     int n;
     cin >> n;
 
@@ -43,7 +43,6 @@ int main() {
     /* 最長増加部分列(LIS)の長さ確認アルゴリズムを実行する */
     /* Lに昇順に並べていき、小さい値vが登場したら、Lの中でv以上の最小値をvにすり替える。 */
     /* これを繰り返した結果のLの長さがLISの長さとなる */
-    int curw = 0;
     int ans = 0;
     vector<int> l(n, pow(10, 5)+1);
     rep(i, whl.size()) {
@@ -66,4 +65,39 @@ int main() {
     }
 
     cout << ans + 1 << endl;
+}
+
+/* 同一wごとのvectorとか用意しなくてもこれで十分 */
+void func1(void) {
+    int n;
+    cin >> n;
+
+    vector<pair<int, int>> wh(n);
+    rep(i, n) {
+        int w, h;
+        cin >> w >> h;
+        wh.at(i).first = w;
+        wh.at(i).second = -h;
+    }
+    sort(all(wh));
+
+    /* 最長増加部分列(LIS)の長さ確認アルゴリズムを実行する */
+    /* Lに昇順に並べていき、小さい値vが登場したら、Lの中でv以上の最小値をvにすり替える。 */
+    /* これを繰り返した結果のLの長さがLISの長さとなる */
+    int ans = 0;
+    vector<int> l(n, pow(10, 5)+1);
+    rep(i, n) {
+        int tgt = -wh.at(i).second;
+        auto next = lower_bound(all(l), tgt);
+        if(next != l.end()) {
+            *next = tgt;
+            ans = max(ans, (int)(next - l.begin()));
+        }
+    }
+
+    cout << ans + 1 << endl;
+}
+
+int main() {
+    func1();
 }
