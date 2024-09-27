@@ -33,6 +33,46 @@ double prob (int n, int d) {
                 break;
         }
     } else {
+#if 1
+        vector<int> cy(6, 0);
+        cy.at(0)++;
+        if(d % 2) {
+            cy.at(0)++;
+        } else {
+            cy.at(1)++;
+        }
+        if(d % 3) {
+            cy.at(0)++;
+        } else {
+            cy.at(2)++;
+        }
+        if((d % 4) == 0) {
+            cy.at(3)++;
+        } else if((d % 2) == 0) {
+            cy.at(1)++;
+        } else {
+            cy.at(0)++;
+        }
+        if(d % 5) {
+            cy.at(0)++;
+        } else {
+            cy.at(4)++;
+        }
+        if((d % 6) == 0) {
+            cy.at(5)++;
+        } else if((d % 3) == 0) {
+            cy.at(2)++;
+        } else if((d % 2) == 0) {
+            cy.at(1)++;
+        } else {
+            cy.at(0)++;
+        }
+        rep(i, 6) {
+            if(cy.at(i)) {
+                ans += ((prob(n-1, d/(i+1))*cy.at(i)))/6;
+            }
+        }
+#else
         ans += prob(n-1, d)/6;  // 1の場合
         if(d % 2) {
             ans += prob(n-1, d)/6;
@@ -65,6 +105,7 @@ double prob (int n, int d) {
         } else {
             ans += prob(n-1, d)/6;
         }
+#endif
     }
     return ans;
 }
@@ -74,5 +115,5 @@ int main() {
     ll d;
     cin >> n >> d;
 
-    cout << prob(n, d) << endl;
+    cout << fixed << setprecision(8) << prob(n, d) << endl;
 }
