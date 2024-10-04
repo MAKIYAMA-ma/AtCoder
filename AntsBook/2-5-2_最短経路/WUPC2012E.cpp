@@ -35,6 +35,10 @@ void dijkstra(vector<vector<pair<int, int>>> &graph, int start, vector<vector<ve
         auto cst = q.top().first;
         q.pop();
 
+        if(from.no == cost.size()-1) {
+            // 会場についてからの移動は不可
+            continue;
+        }
         if(cost.at(from.no).at(from.m4).at(from.m7) < cst) {
             continue;
         }
