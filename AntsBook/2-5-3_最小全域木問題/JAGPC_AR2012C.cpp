@@ -54,10 +54,10 @@ int main() {
     while(true) {
         int n, m;
         cin >> n >> m;
+        int mid = (n/2);
 
         if(n == 0 && m == 0) {
-            continue;
-            /* return 0; */
+            return 0;
         }
 
         priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>,
@@ -73,7 +73,6 @@ int main() {
         UnionFind con;
         con.init(n);
         int cnt = 0;
-        vector<int> cstl;
         while(!q.empty()) {
             auto cst = q.top().first;
             auto p1 = q.top().second.first;
@@ -84,12 +83,11 @@ int main() {
                 continue;
             }
             con.merge(p1, p2);
-            cstl.push_back(cst);
             cnt++;
-            if(cnt >= n-1) {
+            if(cnt == mid) {
+                cout << cst << endl;
                 break;
             }
         }
-        cout << cstl.at(n/2 - 1) << endl;
     }
 }
