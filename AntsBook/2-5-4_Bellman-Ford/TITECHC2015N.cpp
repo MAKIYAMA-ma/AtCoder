@@ -22,16 +22,22 @@ typedef struct {
 } ST_EDGE;
 
 
-bool BellmanFord(vector<ST_EDGE> &edges, vector<long double> &cost, int start, int goal, long double INF) {
+/**
+ * @brief 負閉路の有無を検出する
+ *
+ * @param edges 辺の情報
+ * @param pn    頂点の数(edgesに設定した頂点情報が0 ~ pn-1であること）
+ *
+ * @return true:負閉路がない false:負閉路がある
+ */
+bool checkNegativeCycle(vector<ST_EDGE> &edges, int pn) {
     bool result = true;
-    long double goal_cost = INF;
-    cost.at(start) = 0;
+    // 始点からの正確な最短コストは不要なので、全て0スタートとする
+    // なので連結でなくても負閉路の検出はできる
+    vector<long double> cost(pn, 0);
     rep(i, cost.size()) {
         bool changed = false;
         for(const auto &edge : edges) {
-            if(cost.at(edge.from) == INF) {
-                continue;
-            }
             long double nc = cost.at(edge.from) + edge.cost;
             if(nc < cost.at(edge.to)) {
                 cost.at(edge.to) = nc;
@@ -41,21 +47,8 @@ bool BellmanFord(vector<ST_EDGE> &edges, vector<long double> &cost, int start, i
         if(!changed) {
             break;
         }
-        if(goal < 0) {
-            // ゴールの指定がない（-1）なら、ループがあるとNG
-            if(i == cost.size()-1) {
-                result = false;
-            }
-        } else {
-            // ゴールが指定されている場合、たとえループがあってもゴールのコストは変わらないならOKとする
-            // -> ループ内でコストがプラスマイナス0になる
-            if(i == cost.size()-2) {
-                goal_cost = cost.at(goal);
-            } else if(i == cost.size()-1) {
-                if(goal_cost != cost.at(goal)) {
-                    result = false;
-                }
-            }
+        if(i == cost.size()-1) {
+            result = false;
         }
     }
 
@@ -66,6 +59,18 @@ bool BellmanFord(vector<ST_EDGE> &edges, vector<long double> &cost, int start, i
 bool checkT(vector<ST_EDGE> &edges, vector<long double> &a, long double T) {
     // a(u) + c(u>w) <= a(w) + T
     vector<ST_EDGE> ne;
+#if 0
+    for(auto edge : edges) {
+        ne.push_back({edge.to, edge.from, T - edge.cost});
+    }
+    rep(i, a.size()) {
+        if(a.at(i) != MAXLD) {
+            ne.push_back({0, i, a.at(i)});
+            ne.push_back({i, 0, -a.at(i)});
+        }
+    }
+    vector<long double> cost(a.size(), 0);
+#else
     for(auto edge : edges) {
         if(a.at(edge.from) == MAXLD) {
             if(a.at(edge.to) == MAXLD) {
@@ -86,8 +91,13 @@ bool checkT(vector<ST_EDGE> &edges, vector<long double> &a, long double T) {
             }
         }
     }
-    vector<long double> cost(a.size(), MAXLD);
-    return BellmanFord(ne, cost, 0, -1, MAXLD);
+    // 全て連結の保証がないので、連結要素の始点をそれぞれ0にしたい
+    // しかし、今回はそもそも負閉路の有無のチェックのみで、その際のコストは不要なので、
+    // 全部0スタートで問題ない。
+    /* vector<long double> cost(a.size(), 0); */
+#endif
+    /* return BellmanFord(ne, cost, MAXLD); */
+    return checkNegativeCycle(ne, a.size());
 }
 
 
@@ -95,12 +105,12 @@ int main() {
     int n, m, k;
     cin >> n >> m >> k;
 
-    vector<long double> a(n, MAXLD);
+    vector<long double> a(n+1, MAXLD);
     rep(i, k) {
         int v;
         long double vc;
         cin >> v >> vc;
-        v--;
+        /* v--; */
         a.at(v) = vc;
     }
 
@@ -109,8 +119,8 @@ int main() {
         int u, w;
         long double c;
         cin >> u >> w >> c;
-        u--;
-        w--;
+        /* u--; */
+        /* w--; */
         edges.push_back({u, w, c});
     }
 
