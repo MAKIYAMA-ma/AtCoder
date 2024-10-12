@@ -23,9 +23,7 @@ const ll MINLD = -1e18;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-vector<vector<int>> proc(vector<vector<int>> &ar, int n, int t) {
-    vector<vector<int>> dr(n+1, vector<int>(n+1, 0));
-
+void proc(vector<vector<int>> &dr, vector<vector<int>> &ar, int n, int t) {
     for(int x = t; x <= n+1-t; x++) {
         for(int y = t; y <= n+1-t; y++) {
             dr.at(y).at(n+1-x) = ar.at(x).at(y);
@@ -60,41 +58,32 @@ vector<vector<int>> proc(vector<vector<int>> &ar, int n, int t) {
     /*     cout << endl; */
     /* } */
     /* cout << "------------" << endl; */
-    return dr;
 }
 
 int main() {
     int n;
     cin >> n;
 
-    vector<vector<int>> a(n+1, vector<int>(n+1, 0));
+    vector<vector<vector<int>>> a(4, vector<vector<int>>(n+1, vector<int>(n+1, 0)));
     rep(i, n) {
         string s;
         cin >> s;
         rep(j, n) {
             if(s[j] == '#') {
-                a.at(i+1).at(j+1) = 1;
+                a.at(0).at(i+1).at(j+1) = 1;
             } else {
-                a.at(i+1).at(j+1) = 0;
+                a.at(0).at(i+1).at(j+1) = 0;
             }
         }
     }
 
-    vector<vector<int>> d(n+1, vector<int>(n+1, 0));
-    for(int i = 1; i <= n/2; i++) {
-        a = proc(a, n, i);
-        for(int y = i; y <= n+1-i; y++) {
-            d.at(i).at(y) = a.at(i).at(y);
-            d.at(n+1-i).at(y) = a.at(n+1-i).at(y);
-        }
-        for(int x = i; x <= n+1-i; x++) {
-            d.at(x).at(i) = a.at(x).at(i);
-            d.at(x).at(n+1-i) = a.at(x).at(n+1-i);
-        }
+    for(int i = 1; i < 4; i++) {
+        proc(a.at(i), a.at(i-1), n, i);
     }
     for(int i = 1; i <= n; i++) {
         for(int j = 1; j <= n; j++) {
-            if(d.at(i).at(j)) {
+            int lvl = min(min(i, n-i+1), min(j, n-j+1)) % 4;
+            if(a.at(lvl).at(i).at(j)) {
                 cout << '#';
             } else {
                 cout << '.';
