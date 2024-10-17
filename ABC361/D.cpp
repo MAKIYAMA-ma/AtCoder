@@ -30,21 +30,8 @@ int main() {
     string s, t;
     cin >> n >> s >> t;
 
-    vector sl(n+2, 0), tl(n+2, 0);
-    rep(i, n) {
-        if(s[i] == 'W') {
-            sl[i] = 1;
-        } else if(s[i] == 'B') {
-            sl[i] = 2;
-        }
-    }
-    rep(i, n) {
-        if(t[i] == 'W') {
-            tl[i] = 1;
-        } elte if(t[i] == 'B') {
-            tl[i] = 2;
-        }
-    }
+    s = s + "..";
+    t = t + "..";
 
     // 隣接する2個単位で要素を移動して行くことにより、sをtにできるか？
     // できるなら何手で可能か？
@@ -55,4 +42,60 @@ int main() {
     // ..WBBBWW
     // WWWBBB..
     // NとN+1をセットで移動することもあり得るので2個単位で交換するのとは違う
+    //
+    // 実際の手順を探索するというよりは、
+    // 違う石の数や配置から計算できたりしそうな気も。
+    // ---> BFSらしい
+
+    queue<string> q;
+    map<string, int> cost;
+
+    cost[s] = 0;
+    q.push(s);
+    while(!q.empty()) {
+        bool finish = false;
+        auto nxt = q.front();
+        q.pop();
+
+        int ep = 0; // 空き位置
+        rep(i, nxt.length() - 1) {
+            if(nxt[i] == '.') {
+                ep = i;
+                break;
+            }
+        }
+        int ns_cost = cost[nxt] + 1;
+        rep(i, nxt.length() - 1) {
+            if((i >= ep-1) && (i <= ep+1)) {
+                continue;
+            }
+            string ns = nxt;
+            ns[ep] = ns[i];
+            ns[ep+1] = ns[i+1];
+            ns[i] = '.';
+            ns[i+1] = '.';
+
+            /* cout << "DB:" << nxt << ":" << ns << endl; */
+
+            auto nsc = cost.find(ns);
+            if(nsc == cost.end()) {
+                cost[ns] = ns_cost;
+                q.push(ns);
+                if(ns == t) {
+                    finish = true;
+                    break;
+                }
+            }
+        }
+        if(finish) {
+            break;
+        }
+    }
+
+    auto ans = cost.find(t);
+    if(ans != cost.end()) {
+        cout << (ans->second) << endl;
+    } else {
+        cout << -1 << endl;
+    }
 }
