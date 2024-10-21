@@ -19,6 +19,7 @@ using vi2 = vector<vi>;
 using vl2 = vector<vl>;
 using vpi2 = vector<vpi>;
 using vpl2 = vector<vpl>;
+using vb2 = vector<vb>;
 
 #if 0
 using mint = modint1000000007;
