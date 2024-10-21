@@ -7,15 +7,18 @@ using ll = long long;
 using ull = unsigned long long;
 
 using pi = pair<int, int>;
+using pl = pair<ll, ll>;
 
 using vi = vector<int>;
 using vl = vector<ll>;
-using vp = vector<pi>;
+using vpi = vector<pi>;
+using vpl = vector<pl>;
 using vb = vector<bool>;
 
 using vi2 = vector<vi>;
 using vl2 = vector<vl>;
-using vp2 = vector<vp>;
+using vpi2 = vector<vpi>;
+using vpl2 = vector<vpl>;
 
 #if 1
 using mint = modint1000000007;
@@ -37,26 +40,6 @@ const ll MINLD = -1e18;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-ll combine(int n, int k, int start, vi& current, ll ans, vl& a, vl& b) {
-    if (current.size() == k) {
-        ll am = 1;
-        ll sb = 0;
-        for(auto t: current) {
-            am = max(a[t], am);
-            sb += b[t];
-        }
-        ans = min(ans, am*sb);
-        return ans;
-    }
-
-    for (int i = start; i < n; ++i) {
-        current.push_back(i);
-        ans = combine(n, k, i + 1, current, ans, a, b);
-        current.pop_back();
-    }
-    return ans;
-}
-
 int main() {
     ll t;
     cin >> t;
@@ -70,27 +53,29 @@ int main() {
         cin >> n >> k;
         ll ans = MAXLL;
 
-        vl a(n), b(n);
-        rep(j, n) cin >> a[j];
-        rep(j, n) cin >> b[j];
-#if 1
-        vp s(n);
-        rep(j, n) {
-            s[j].first = a[j]*b[j];
-            s[j].second = j;
+        vpl ab(n);
+        rep(j, n) cin >> ab[j].first;
+        rep(j, n) cin >> ab[j].second;
+
+        sort(all(ab));
+        /* priority_queue<ll, vl, greater<ll>> bl; */
+        priority_queue<ll> bl;
+        ll bsum = 0;
+        rep(j, k-1) {
+            bl.push(ab[j].second);
+            bsum += ab[j].second;
         }
-        sort(all(s));
-        ll am = 1;
-        ll sb = 0;
-        rep(j, k) {
-            am = max(a[s[j].second], am);
-            sb += b[s[j].second];
+        for(int j = k-1; j < n; j++) {
+            auto nxt = ab[j];
+            bsum += nxt.second;
+            /* cout << "next (a,b): " << nxt.first << "," << nxt.second << endl; */
+            ans = min(ans, nxt.first * bsum);
+
+            bl.push(nxt.second);
+            bsum -= bl.top();
+            /* cout << "pop: " << bl.top() << endl; */
+            bl.pop();
         }
-        ans = am*sb;
-#else
-        vi current;
-        ans = combine(n, k, 0, current, ans, a, b);
-#endif
         cout << ans << endl;
     }
 }
