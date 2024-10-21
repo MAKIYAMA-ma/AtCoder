@@ -37,94 +37,62 @@ const ll MINLD = -1e18;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-int check(int l, int r, int t, int n, char h) {
-    if(h == 'L') {
-        if(l < r) {
-            if(l < t && t < r) {
-                return t-l;
-            } else {
-                int tmp = l-t;
-                if(tmp < 0) tmp += n;
-                return tmp;
-            }
-        } else {
-            if(r < t && t < l) {
-                return l-t;
-            } else {
-                int tmp = t-l;
-                if(tmp < 0) tmp += n;
-                return tmp;
-            }
-        }
+
+ll check(ll &bf, ll &gd, ll tgt, ll n) {
+    vl ans(2, 0);
+    vl ngd(2, gd);
+
+    if(bf > gd) gd += n;
+    if(bf > tgt) tgt += n;
+
+    if(tgt < gd) {
+        ans[0] = tgt - bf;
+
+        ans[1] = gd - (tgt - 1);
+        ans[1] += bf - (tgt - n);
+        ngd[1] = (tgt - 1) % n;
     } else {
-        if(l < r) {
-            if(l < t && t < r) {
-                return r-t;
-            } else {
-                int tmp = t-r;
-                if(tmp < 0) tmp += n;
-                return tmp;
-            }
-        } else {
-            if(r < t && t < l) {
-                return t-r;
-            } else {
-                int tmp = r-t;
-                if(tmp < 0) tmp += n;
-                return tmp;
-            }
-        }
+        ans[0] = bf - (tgt - n);
+
+        ans[1] = (tgt + 1) - gd;
+        ans[1] += tgt - bf;
+        ngd[1] = (tgt + 1) % n;
     }
+
+    int ai{0};
+    if(ans[0] > ans[1]) {
+        ai = 1;
+    }
+
+    bf = tgt % n;
+    gd = ngd[ai];
+
+    return ans[ai];
 }
 
+
 int main() {
-    int n, q;
+    ll n, q;
     cin >> n >> q;
-    int l{1}, r{2};
+    ll l{0}, r{1};
 
     ll ans = 0;
     rep(i, q) {
         char h;
-        int t;
+        ll t;
         cin >> h >> t;
+        t--;
 
-        int a1 = check(l, r, t, n, h);
+        // TODO 貪欲ではWA
+        // 邪魔な手をずらすパターンと逆側から行くパターンで、
+        // その時点では手数が多くても、後の要求時の手数が大幅に削減できるパターンがありうる
+        // -> DPを使うらしい
         if(h == 'L') {
-            int nl = t-1;
-            if(nl < 0) nl += n;
-
-            int a2 = check(l, r, (t+1)%(n+1), n, 'R') +
-                check(l, (t+1)%(n+1), t, n, 'L');
-            int a3 = check(l, r, nl, n, 'R') +
-                check(l, nl, t, n, 'L');
-            /* cout << "DB1:" << a1 << ":" << a2 << endl; */
-            int sl = min(a1, min(a2, a3));
-            ans += sl;
-            if(sl == a2) {
-                r = (t+1)%(n+1);
-            } else if(sl == a3) {
-                r = nl;
-            }
-            l = t;
+            ans += check(l, r, t, n);
         } else {
-            int nl = t-1;
-            if(nl < 0) nl += n;
-
-            int a2 = check(l, r, (t+1)%(n+1), n, 'L') +
-                check((t+1)%(n+1), r, t, n, 'R');
-            int a3 = check(l, r, nl, n, 'L') +
-                check(nl, r, t, n, 'R');
-            /* cout << "DB2:" << a1 << ":" << a2 << endl; */
-
-            int sl = min(a1, min(a2, a3));
-            ans += sl;
-            if(sl == a2) {
-                l = (t+1)%(n+1);
-            } else if(sl == a3) {
-                l = nl;
-            }
-            r = t;
+            ans += check(r, l, t, n);
         }
+        /* cout << l << " " << r << " " << ans << endl; */
     }
     cout << ans << endl;
 }
