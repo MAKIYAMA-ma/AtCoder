@@ -14,12 +14,14 @@ using vl = vector<ll>;
 using vpi = vector<pi>;
 using vpl = vector<pl>;
 using vb = vector<bool>;
+using vd = vector<double>;
 
 using vi2 = vector<vi>;
 using vl2 = vector<vl>;
 using vpi2 = vector<vpi>;
 using vpl2 = vector<vpl>;
 using vb2 = vector<vb>;
+using vd2 = vector<vd>;
 
 #if 0
 using mint = modint1000000007;
@@ -33,6 +35,7 @@ using mint = modint998244353;
 #define rall(vec) (vec).rbegin(), (vec).rend()
 #define Yes(cond) cout << ((cond) ? "Yes" : "No") << endl;
 #define YES(cond) cout << ((cond) ? "YES" : "NO") << endl;
+#define PrintD(val) cout << fixed << setprecision(15) << (val) << endl;
 
 const ll MAXLL = 1e18;
 const ll MINLL = -1e18;
