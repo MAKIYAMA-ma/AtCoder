@@ -46,41 +46,32 @@ const ll MINLD = -1e18;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
+ll check(vi &a, int l, int r, bool plus, vl2 &pt, vb2 &visited) {
+    if(visited[l][r]) return pt[l][r];
+    if(l == r) {
+        pt[l][r] = a[l] * (plus ? 1 : -1);
+    } else {
+        if(plus) {
+            pt[l][r] = max(check(a, l+1, r, !plus, pt, visited) + a[l], check(a, l, r-1, !plus, pt, visited) + a[r]);
+        } else {
+            pt[l][r] = min(check(a, l+1, r, !plus, pt, visited) - a[l], check(a, l, r-1, !plus, pt, visited) - a[r]);
+        }
+    }
+    visited[l][r] = true;
+    return pt[l][r];
+}
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
-    int n, k;
-    cin >> n >> k;
-
-    // 1 ≤ N ≤ 100
-    // 1 ≤ K ≤ 10^5
-    // 1 ≤ a1 <a2 < ⋯ < aN ≤ K
-    // N x NでもOK
-    // i番目の手でajをとったとき、、、という配列は作れる。
-    // 「両者最適に行動した時」とは
-    // 手番で、rest < min{A}未満にされた側が負ける
-    // -> 手番で、X <= rest <= min{A} + X となるXがあれば勝てる
-    //
-    // 1回目にa1をとった場合のゲームは、先攻後攻が入れ替わって
-    // K -> K-a1
-    // A -> A' = {a2, a3, ... ,aN}
-    // になった場合と同じ
+    int n;
+    cin >> n;
 
     vi a(n, 0);
     rep(i, n) cin >> a[i];
 
-    // falseのマスからは後にたどってtrueを付けられる
-    // trueからたどる際はどうやる？
-    // a1...aNまでどう飛んでもtrueにたどり着くマスはfalseとなる
-    // 一個でもfalseに飛ばせる選択肢があるならtrueになる
-    // 後からはたどりにくいが。。。
-    vb dp(k+1, false);
-    srep(i, 1, k+1) {
-        rep(j, n) {
-            dp[i] = (dp[i] || ((i >= a[j]) ? !dp[i - a[j]] : false));
-        }
-    }
-    cout << (dp[k] ? "First" : "Second") << endl;
+    vl2 pt(n, vl(n, 0));
+    vb2 visited(n, vb(n, false));
+    cout << check(a, 0, n-1, true, pt, visited) << endl;
 }

@@ -47,40 +47,49 @@ const ll MINLD = -1e18;
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
 
+ll merge(vl &ac, int l, int r, vl2 &dp) {
+    if(dp[l][r] != MAXLL) return dp[l][r];
+    if(l == r) {
+        dp[l][r] = 0;
+        return dp[l][r];
+    }
+    srep(i, l, r) {
+        dp[l][r] = min(dp[l][r], merge(ac, l, i, dp) + merge(ac, i+1, r, dp) + ac[r] - ((l > 0) ? ac[l-1] : 0));
+    }
+    return dp[l][r];
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
-    int n, k;
-    cin >> n >> k;
+    int n;
+    cin >> n;
 
-    // 1 ≤ N ≤ 100
-    // 1 ≤ K ≤ 10^5
-    // 1 ≤ a1 <a2 < ⋯ < aN ≤ K
-    // N x NでもOK
-    // i番目の手でajをとったとき、、、という配列は作れる。
-    // 「両者最適に行動した時」とは
-    // 手番で、rest < min{A}未満にされた側が負ける
-    // -> 手番で、X <= rest <= min{A} + X となるXがあれば勝てる
-    //
-    // 1回目にa1をとった場合のゲームは、先攻後攻が入れ替わって
-    // K -> K-a1
-    // A -> A' = {a2, a3, ... ,aN}
-    // になった場合と同じ
-
-    vi a(n, 0);
+    vl a(n);
     rep(i, n) cin >> a[i];
 
-    // falseのマスからは後にたどってtrueを付けられる
-    // trueからたどる際はどうやる？
-    // a1...aNまでどう飛んでもtrueにたどり着くマスはfalseとなる
-    // 一個でもfalseに飛ばせる選択肢があるならtrueになる
-    // 後からはたどりにくいが。。。
-    vb dp(k+1, false);
-    srep(i, 1, k+1) {
-        rep(j, n) {
-            dp[i] = (dp[i] || ((i >= a[j]) ? !dp[i - a[j]] : false));
-        }
+    vl ac(n);   // スライムサイズの累積配列
+    ac[0] = a[0];
+    srep(i, 1, n) {
+        ac[i] = ac[i-1] + a[i];
     }
-    cout << (dp[k] ? "First" : "Second") << endl;
+
+    // 基本的には、大きいものほど合体に使う回数を減らしたい
+    // 端から処理の縛りはないので区間DPとかとも違う感じ
+    // 途中経過の状態をどう管理するのか？
+    // 2 ≤ N ≤ 400
+    // 1 ≤ ai ≤ 10^9
+    // 各隙間が合体済みか否かだと、2^399状態になってしまう。
+    // 合体はn-1回で絶対終わる
+    //
+    // n-1回目にkとk+1の間を合体するなら、コストは
+    // 1 ~ kの最小コスト + k+1 ~ nの最小コスト+ 1 ~ n のスライムの合計
+    // しかしこの路線でたどるなら上記の2^399状態の路線になる。。。
+    //
+    // l ~ rまでの合体の最小コストということだと行けるのでは？
+    // 組合せ数は高々400*399/2しかない
+
+    vl2 dp(n, vl(n, MAXLL));
+    cout << merge(ac, 0, n-1, dp) << endl;
 }

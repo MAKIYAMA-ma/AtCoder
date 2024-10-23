@@ -54,33 +54,55 @@ int main() {
     int n, k;
     cin >> n >> k;
 
-    // 1 ≤ N ≤ 100
-    // 1 ≤ K ≤ 10^5
-    // 1 ≤ a1 <a2 < ⋯ < aN ≤ K
-    // N x NでもOK
-    // i番目の手でajをとったとき、、、という配列は作れる。
-    // 「両者最適に行動した時」とは
-    // 手番で、rest < min{A}未満にされた側が負ける
-    // -> 手番で、X <= rest <= min{A} + X となるXがあれば勝てる
-    //
-    // 1回目にa1をとった場合のゲームは、先攻後攻が入れ替わって
-    // K -> K-a1
-    // A -> A' = {a2, a3, ... ,aN}
-    // になった場合と同じ
-
-    vi a(n, 0);
+    vi a(n);
     rep(i, n) cin >> a[i];
 
-    // falseのマスからは後にたどってtrueを付けられる
-    // trueからたどる際はどうやる？
-    // a1...aNまでどう飛んでもtrueにたどり着くマスはfalseとなる
-    // 一個でもfalseに飛ばせる選択肢があるならtrueになる
-    // 後からはたどりにくいが。。。
-    vb dp(k+1, false);
+    // kを、a[i]以下のn個の正整数の和に分割するパターン数を求める
+    // k-a[n-1] ~ kを、n-1までのa[i]に分割する方法の和に等しい
+    // 1 ≤ N ≤ 100
+    // 0 ≤ K ≤ 10^5
+    // NxKの配列で問題ない
+    vector<vector<mint>> dp(n, vector<mint>(k+1, 0));
+#if 1
+    // 毎回足すのばからしいのでdpの中身を累積に変更。
+    // これなら10^2 * 10^5 = 10^7のループなので余裕。
+    dp[0][0] = 1;
     srep(i, 1, k+1) {
-        rep(j, n) {
-            dp[i] = (dp[i] || ((i >= a[j]) ? !dp[i - a[j]] : false));
+        if(i <= a[0]) {
+            dp[0][i] += dp[0][i-1] + 1;
+        } else {
+            dp[0][i] += dp[0][i-1];
         }
     }
-    cout << (dp[k] ? "First" : "Second") << endl;
+    srep(i, 1, n) {
+        rep(j, k+1) {
+            dp[i][j] = ((j > 0) ? dp[i][j-1] : 0) + dp[i-1][j] - ((j - a[i] - 1 >= 0) ? dp[i-1][j-a[i]-1] : 0);
+        }
+    }
+    /* cout << "-------------" << endl; */
+    /* rep(i, n) { */
+    /*     rep(j, k+1) { */
+    /*         cout << dp[i][j].val() << " "; */
+    /*     } */
+    /*     cout << endl; */
+    /* } */
+    /* cout << "-------------" << endl; */
+    cout << (dp[n-1][k] - dp[n-1][k-1]).val() << endl;
+#else
+    rep(i, a[0]+1) {
+        dp[0][i] = 1;
+    }
+    // TODO TLEとなった
+    // 最大で10^2 * 10^5 * 10*5 = 10^12
+    // AtCoderでは10^8回/secくらいが目安だそうなので、これだとTLE
+    srep(i, 1, n) {
+        rep(j, k+1) {
+            int mx = min(j+1, a[i]+1);
+            rep(l, mx) {
+                dp[i][j] += dp[i-1][j-l];
+            }
+        }
+    }
+    cout << dp[n-1][k].val() << endl;
+#endif
 }
