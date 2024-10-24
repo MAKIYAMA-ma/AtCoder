@@ -3,6 +3,12 @@
 using namespace std;
 using namespace atcoder;
 
+#if 1
+using mint = modint1000000007;
+#else
+using mint = modint998244353;
+#endif
+
 using ll = long long;
 using ull = unsigned long long;
 
@@ -15,6 +21,7 @@ using vpi = vector<pi>;
 using vpl = vector<pl>;
 using vb = vector<bool>;
 using vd = vector<double>;
+using vm = vector<mint>;
 
 using vi2 = vector<vi>;
 using vl2 = vector<vl>;
@@ -22,12 +29,8 @@ using vpi2 = vector<vpi>;
 using vpl2 = vector<vpl>;
 using vb2 = vector<vb>;
 using vd2 = vector<vd>;
+using vm2 = vector<vm>;
 
-#if 0
-using mint = modint1000000007;
-#else
-using mint = modint998244353;
-#endif
 #define rep(i, n) for(int i = 0; i < (int)(n); i++)
 #define rrep(i, n) for(int i = (int)(n)-1; i >= 0; i--)
 #define srep(i, s, n) for(int i = (int)(s); i < (int)(n); i++)
