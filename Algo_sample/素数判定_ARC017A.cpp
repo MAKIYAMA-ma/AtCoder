@@ -46,6 +46,26 @@ bool isPrime(ll n) {
     return true;
 }
 
+// 1 以上 N 以下の整数が素数かどうかを返す
+// エラストスのふるい
+vector<bool> Eratosthenes(int N) {
+    vector<bool> isprime(N+1, true);
+
+    // 0, 1 は予めふるい落としておく
+    isprime[0] = isprime[1] = false;
+
+    // ふるい
+    for (int p = 2; p <= N; ++p) {
+        if (!isprime[p]) continue;
+
+        for (int q = p * 2; q <= N; q += p) {
+            isprime[q] = false;
+        }
+    }
+
+    return isprime;
+}
+
 
 int main() {
     int n;
