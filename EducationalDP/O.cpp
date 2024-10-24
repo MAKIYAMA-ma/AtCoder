@@ -46,17 +46,8 @@ const ll MINLD = -1e18;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-
-ll merge(vl &ac, int l, int r, vl2 &dp) {
-    if(dp[l][r] != MAXLL) return dp[l][r];
-    if(l == r) {
-        dp[l][r] = 0;
-        return dp[l][r];
-    }
-    srep(i, l, r) {
-        dp[l][r] = min(dp[l][r], merge(ac, l, i, dp) + merge(ac, i+1, r, dp) + ac[r] - ((l > 0) ? ac[l-1] : 0));
-    }
-    return dp[l][r];
+int popcount(int x) {
+    return __builtin_popcount(x);
 }
 
 int main() {
@@ -72,16 +63,23 @@ int main() {
             cin >> a[i][j];
         }
     }
-    // 上記aの中から、行も列一回ずつのみ使って1を選ぶ組合せ
-    // n組目としてmnとwnをペアにする場合。。。とか考えた場合、実際はそのコンビがn組目で1組目でも変わらない。
-    // mnとwnがペアになるパターン数。。。とかをDPで出来たりする？
-    // --> 最後に、どれか一人について全て足し合わせれば総数が出る
-    // でもほかのマスから計算できんやろ
-    // 1≤N≤21
-    // 男女それぞれについて、誰が残っているかのパターンは2^21
-    // その組み合わせで状態を持とうとすると、2^42になる。これを配列で持つのはMLEなはず。
-    // 実際の組合せとしては、常に男女同数であり、残り人数が異なる場合のデータ領域は不要
-    // それを考慮すると、実際に使うデータ領域のみでデータを持てればMLEは回避できるのかも。
-    // でもどう実現できる？
-    // nのMAXが21というのは何かのぎりぎりを攻めているのか？
+
+    // 残っている女性の組合せごとのDP
+    // 1:ペアリング済み 0:未ペアリング
+    vector<mint> dp(1 << n, 0);
+    dp[0] = 1;
+
+    rep(i, (1 << n) - 1) {
+        // ペアリングする順番は結果に関係ない
+        // よって、0番からn番に向けて、各男性のペアを決定していく、という順序で固定する。
+        // -> ペアリング済みの女性がmn人なら、ペアを探す男性はmn番。
+        int mn = popcount(i);
+        rep(j, n) {
+            if(a[mn][j] && !(i & (1 << j))) {
+                // 常にビットが増えた要素を更新するので、0から順に更新するなら問題ない
+                dp[i | (1 << j)] += dp[i];
+            }
+        }
+    }
+    cout << dp[(1 << n)-1].val() << endl;
 }
