@@ -62,6 +62,53 @@ mint Factorical(ll n, ll m) {
     return ans;
 }
 
+
+/**
+ * @brief 行列の積
+ *
+ * @param x
+ * @param y
+ *
+ * @return 
+ */
+vector<vector<mint>> MultiArray(vector<vector<mint>> &x, vector<vector<mint>> &y) {
+    vector<vector<mint>> ans(x.size(), vector<mint>(y[0].size(), 0));
+    rep(i, x.size()) {
+        rep(j, y[0].size()) {
+            rep(k, x[0].size()) {
+                ans[i][j] += (x[i][k] * y[k][j]);
+            }
+        }
+    }
+    return ans;
+}
+
+
+/**
+ * @brief 行列の累乗
+ *
+ * @param x
+ * @param n
+ *
+ * @return 
+ */
+vector<vector<mint>> PowArray(vector<vector<mint>> &x, ll n) {
+    vector<vector<mint>> ans(x.size(), vector<mint>(x.size(), 0));
+    rep(i, x.size()) {
+        ans[i][i] = 1;
+    }
+
+    while(n > 0) {
+        if(n % 2) {
+            ans = MultiArray(ans, x);
+        }
+        x = MultiArray(x, x);
+        n >>= 1;
+    }
+    return ans;
+}
+
+
 /**
  * @brief aとbの最大公約数を求める。
  * でもライブラリでgcdって関数あるけどね。
