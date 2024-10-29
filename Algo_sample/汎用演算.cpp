@@ -64,6 +64,27 @@ mint Factorical(ll n, ll m) {
 
 
 /**
+ * @brief 0 ~ nの整数で、第pビット（0始まり）が立つ数字が何個あるか
+ *
+ * @param n
+ * @param p
+ *
+ * @return 
+ */
+ll CountBit(ll n, int p) {
+    ll ans = 0;
+    ll cycle = ((ll)1 << (p + 1));     // 第p bitはcycle/2回0となり、cycle/2回1となるのを繰り返す
+    ll cycle_num = (n+1) / cycle;  // 0~nの整数で、cycleが何個入るか
+
+    ans = cycle_num * (cycle/2);
+    ans += max((ll)0, ((n+1) % cycle) - (cycle/2)); // 余剰分に含まれる1の個数。0区間が終わった残りがあれば、その分は1
+
+    /* cout << p << ":" << ans << endl; */
+    return ans;
+}
+
+
+/**
  * @brief 行列の積
  *
  * @param x
