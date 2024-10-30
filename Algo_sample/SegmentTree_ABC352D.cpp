@@ -54,12 +54,25 @@ const int MINI = -1e9;
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
 
+/**
+ * @brief SegmentTreeクラス
+ * init時、操作をtypeで指定する。
+ * 0: 総和
+ * 1: MAX
+ * 2: MIN
+ */
 class SegmentTree {
     public:
         vl tree;
         int n;
         int type;   // 0:累積, 1:max, 2:min
 
+        /**
+         * @brief 初期関数。要素数と演算のタイプを指定する。
+         *
+         * @param n_
+         * @param t
+         */
         void init(int n_, int t) {
             type = t;
             n = 1;
@@ -71,6 +84,12 @@ class SegmentTree {
             }
         }
 
+        /**
+         * @brief idx番の要素をvalに更新する
+         *
+         * @param idx
+         * @param val
+         */
         void update(int idx, ll val) {
             idx += (n-1);
             tree[idx] = val;
@@ -84,6 +103,14 @@ class SegmentTree {
             }
         }
 
+        /**
+         * @brief a～bの範囲の演算結果を取得する
+         *
+         * @param a
+         * @param b
+         *
+         * @return 
+         */
         ll ask(int a, int b) {
             switch(type) {
                 case 0: return query_add(a, b, 0, 0, n); break;

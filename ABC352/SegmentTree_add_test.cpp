@@ -142,24 +142,16 @@ int main() {
     // 連続するK個の数字がまとまっている範囲として、最小の範囲を求めたい。
     Def(n);
     Def(k);
-    vi pi(n);
-    rep(i, n) {
-        Def(p);
-        pi[p-1] = i;
-    }
+    DefA(p, n);
 
-    SegmentTree stmin, stmax;
-    stmax.init(n, 1);
-    stmin.init(n, 2);
+    SegmentTree stadd;
+    stadd.init(n, 0);
 
     rep(i, n) {
-        stmin.update(i, pi[i]);
-        stmax.update(i, pi[i]);
+        stadd.update(i, p[i]);
     }
 
-    ll ans = n+1;
     rep(i, n-k+1) {
-        ans = min(ans, stmax.ask(i, i+k) - stmin.ask(i, i+k));
+        cout << stadd.ask(i, i+k) << endl;
     }
-    cout << ans << endl;
 }
