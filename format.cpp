@@ -39,6 +39,8 @@ using vm2 = vector<vm>;
 #define Yes(cond) cout << ((cond) ? "Yes" : "No") << endl;
 #define YES(cond) cout << ((cond) ? "YES" : "NO") << endl;
 #define PrintD(val) cout << fixed << setprecision(15) << (val) << endl;
+#define Def(n) ll n; cin >> n;
+#define DefA(a, n) vl a(n); rep(i, n) cin >> a[i];
 
 const ll MAXLL = 1e18;
 const ll MINLL = -1e18;
