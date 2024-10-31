@@ -104,12 +104,12 @@ class SegmentTree {
         }
 
         /**
-         * @brief a～bの範囲の演算結果を取得する
+         * @brief [a, b)の範囲の演算結果を取得する
          *
          * @param a
          * @param b
          *
-         * @return 
+         * @return 演算結果
          */
         ll ask(int a, int b) {
             switch(type) {
@@ -122,7 +122,7 @@ class SegmentTree {
 
     private:
         ll query_add(int a, int b, int idx, int left, int right) {
-            //考えようとしている区間が、[a,b)に全く含まれないなら、INT_MAXを返して、操作に影響しないようにする。
+            //考えようとしている区間が、[a,b)に全く含まれないなら、0を返して、操作に影響しないようにする。
             if (a >= right || b <= left) return 0;
 
             //考えようとしている区間が[a,b)に完全に含まれているなら、その値を返せばよい。
@@ -135,26 +135,22 @@ class SegmentTree {
         }
 
         ll query_max(int a, int b, int idx, int left, int right) {
-            //考えようとしている区間が、[a,b)に全く含まれないなら、INT_MAXを返して、操作に影響しないようにする。
+            //考えようとしている区間が、[a,b)に全く含まれないなら、MINを返して、操作に影響しないようにする。
             if (a >= right || b <= left) return MINLL;
 
-            //考えようとしている区間が[a,b)に完全に含まれているなら、その値を返せばよい。
             if (a <= left && b >= right) return tree[idx];
 
-            //どちらでもない場合、tree[idx]の2つの子ノードに対して再帰的に操作を行う。
             ll value_1 = query_max(a, b, 2 * idx + 1, left, (left + right) / 2);
             ll value_2 = query_max(a, b, 2 * idx + 2, (left + right) / 2, right);
             return max(value_1, value_2);
         }
 
         ll query_min(int a, int b, int idx, int left, int right) {
-            //考えようとしている区間が、[a,b)に全く含まれないなら、INT_MAXを返して、操作に影響しないようにする。
+            //考えようとしている区間が、[a,b)に全く含まれないなら、MAXを返して、操作に影響しないようにする。
             if (right <= a || b <= left) return MAXLL;
 
-            //考えようとしている区間が[a,b)に完全に含まれているなら、その値を返せばよい。
             if (a <= left && right <= b) return tree[idx];
 
-            //どちらでもない場合、tree[idx]の2つの子ノードに対して再帰的に操作を行う。
             ll value_1 = query_min(a, b, 2 * idx + 1, left, (left + right) / 2);
             ll value_2 = query_min(a, b, 2 * idx + 2, (left + right) / 2, right);
             return min(value_1, value_2);
