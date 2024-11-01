@@ -57,4 +57,51 @@ const int MINI = -1e9;
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
+
+    // 1 ≤ N ≤ 50
+    // 1 ≤ K ≤ N
+    // 0 ≤ Ai,j ≤ 10^9
+    // 行,列いずれの方向でもK個以内になるようにマスを選び、aの総和を最大化する
+    Def(n);
+    Def(k);
+    vl2 a(n, vl(n));
+    rep(i, n) rep(j, n) cin >> a[i][j];
+
+    // 行と列のマッチングを行う。
+    // 各行にstartから流量Kの枝を張り、各列からgoalにも流量Kの枝を張る。
+    // 各行と列の間は流量1の枝を張り、コストは-aとする。
+    // コストを最小化するように、n*kの流量を流す。
+    mcf_graph<ll, ll> graph(n*2 + 2);
+    int sp = n*2;
+    int gp = n*2 + 1;
+
+    // 得点ナシで流すことも許す(n*kを流しきるためにコストを犠牲にする事がないように）
+    graph.add_edge(sp, gp, n*k, MAXLL);
+    rep(i, n) {
+        graph.add_edge(sp, i, k, 0);
+        graph.add_edge(n+i, gp, k, 0);
+    }
+    rep(i, n) {
+        rep(j, n) {
+            graph.add_edge(i, n+j, 1, MAXLL - a[i][j]);
+        }
+    }
+    auto ans = graph.flow(sp, gp, n*k);
+    auto cells = graph.edges();
+    vector<vector<char>> map(n, vector<char>(n, '.'));
+    for(auto p : cells) {
+        if(p.from == sp || p.to == sp || p.from == gp || p.to == gp) continue;
+        if(p.flow == 0) continue;
+        int pl = p.from;
+        int pr = p.to - n;
+        map[pl][pr] = 'X';
+    }
+
+    cout << -ans.second + MAXLL*ans.first << endl;
+    rep(i, n) {
+        rep(j, n) {
+            cout << map[i][j];
+        }
+        cout << endl;
+    }
 }
