@@ -54,20 +54,83 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
+class BIT {
+    public:
+        vl tree;
+
+        void init(int n) {
+            tree.resize(n+1, 0);
+        }
+
+        void add(int start) {
+            for(int i = start; i < tree.size(); i += i&(-i)) {
+                tree[i]++;
+            }
+        }
+
+        ll ask(int ind) {
+            ll ans = 0;
+            for(int i = ind; i; i -= i&(-i) ) {
+                ans += tree[i];
+            }
+            return ans;
+        }
+};
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
     Def(n);
     Def(m);
-    DefA(a, n);
-
-    ll ans = 0;
+    vl a(n+1, 0);
     rep(i, n) {
-        /* cout << i << ":" << (i+1)*(n-i) << endl; */
-        ans += ((a[i] % m) * (i+1) * (n-i));
-        /* ans += (a[i] * (i+1) * (n-i)); */
-        /* ans %= m; */
+        cin >> a[i+1];
+        a[i+1] += a[i];
+        a[i+1] %= m;
     }
-    cout << ans << endl;
+
+#if 0
+    ll ans = 0;
+    ll adjc{0};
+    BIT bt;
+    bt.init(m);
+    srep(i, 1, n+1) {
+        ans += a[i]*(2*i - n);
+        adjc += i - bt.ask(a[i]) - 1;
+        bt.add(a[i]);
+        /* cout << "DB2:" << a[i] << "," << i << "," << (n-i) << endl; */
+    }
+#elif 1
+    // これだとOK
+    // BITが遅い？？？
+    ll ans{0};
+    ll adjc{0};
+    fenwick_tree<ll> fw(m);
+    srep(i, 1, n+1) {
+        ans += a[i]*(2*i - n);
+        /* adjc += i - fw.sum(0, a[i]+1) - 1; */
+        adjc += fw.sum(a[i]+1, m);
+        fw.add(a[i], 1);
+        /* cout << "DB2:" << a[i] << "," << i << "," << (n-i) << endl; */
+    }
+#else
+    ll ans = 0;
+    srep(i, 1, n+1) {
+        ans += a[i]*i;
+        ans -= a[i]*(n-i);
+        /* cout << "DB2:" << a[i] << "," << i << "," << (n-i) << endl; */
+    }
+
+    // 各aについて、それ未満のインデックスにa[i]より大きい値がいくつあるかカウントしたい
+    ll adjc{0};
+    BIT bt;
+    bt.init(m);
+    srep(i, 1, n+1) {
+        adjc += i - bt.ask(a[i]) - 1;
+        bt.add(a[i]);
+    }
+#endif
+
+    cout << ans + adjc*m << endl;
 }
