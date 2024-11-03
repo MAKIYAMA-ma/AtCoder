@@ -54,10 +54,24 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-typedef struct {
-    int x, y, count;
-    set<int> path;
-} ST_PT;
+const vi dx = {1, -1, 0, 0};
+const vi dy = {0, 0, 1, -1};
+
+ll check(int x, int y, int count, int gl, vb2 &visited, vs &mp) {
+    if(x < 0 || x >= mp.size() || y < 0 || y >= mp[0].length()) return 0;
+    if(mp[x][y] != '.' || visited[x][y]) return 0;
+    if(count == gl) return 1;
+
+    ll ans{0};
+    visited[x][y] = true;
+    rep(i, 4) {
+        ans += check(x + dx[i], y + dy[i], count+1, gl, visited, mp);
+    }
+    visited[x][y] = false;
+
+    /* cout << "DB:" << x << "," << y << " : " << ans << endl; */
+    return ans;
+}
 
 int main() {
     ios_base::sync_with_stdio(false);
@@ -73,35 +87,11 @@ int main() {
     }
 
     ll ans{0};
-    vi dx = {1, -1, 0, 0};
-    vi dy = {0, 0, 1, -1};
+    vb2 visited(h, vb(w, false));
     rep(i, h) {
         rep(j, w) {
             if(s[i][j] == '.') {
-                stack<ST_PT> st;
-                st.push({i, j, 0, {}});
-                while(!st.empty()) {
-                    auto tp = st.top();
-                    st.pop();
-                    rep(i, 4) {
-                        int nx = tp.x + dx[i];
-                        int ny = tp.y + dy[i];
-                        if((nx >= 0) && (nx < h) && (ny >= 0) && (ny < w) && s[nx][ny] == '.') {
-                            if(tp.path.find(nx*w + ny) == tp.path.end()) {
-                                auto nxt = tp;
-                                nxt.path.insert((tp.x)*w + tp.y);
-                                nxt.x = nx;
-                                nxt.y = ny;
-                                nxt.count++;
-                                if(nxt.count == k) {
-                                    ans++;
-                                } else {
-                                    st.push(nxt);
-                                }
-                            }
-                        }
-                    }
-                }
+                ans += check(i, j, 0, k, visited, s);
             }
         }
     }
