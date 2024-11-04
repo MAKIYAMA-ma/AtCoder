@@ -59,7 +59,6 @@ class BITMax {
 
         /**
          * @brief indexは1始まりとするため、1多く領域をとる。
-         * アクセス時も、1始まりであることに留意。
          *
          * @param n
          */
@@ -74,7 +73,7 @@ class BITMax {
          * @param val
          */
         void add(int start, ll val) {
-            for(int i = start; i < tree.size(); i += i&(-i)) {
+            for(int i = start+1; i < tree.size(); i += i&(-i)) {
                 tree[i] = max(tree[i], val);
             }
         }
@@ -88,7 +87,7 @@ class BITMax {
          */
         ll ask(int ind) {
             ll ans = 0;
-            for(int i = ind; i; i -= i&(-i) ) {
+            for(int i = ind+1; i; i -= i&(-i) ) {
                 ans = max(ans, tree[i]);
             }
             return ans;
