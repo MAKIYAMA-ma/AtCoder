@@ -32,9 +32,9 @@ using vb2 = vector<vb>;
 using vd2 = vector<vd>;
 using vm2 = vector<vm>;
 
-#define rep(i, n) for(int i = 0; i < (int)(n); i++)
-#define rrep(i, n) for(int i = (int)(n)-1; i >= 0; i--)
-#define srep(i, s, n) for(int i = (int)(s); i < (int)(n); i++)
+#define rep(i, n) for(ll i = 0; i < (ll)(n); i++)
+#define rrep(i, n) for(ll i = (ll)(n)-1; i >= 0; i--)
+#define srep(i, s, n) for(ll i = (ll)(s); i < (ll)(n); i++)
 #define all(vec) (vec).begin(), (vec).end()
 #define rall(vec) (vec).rbegin(), (vec).rend()
 #define Yes(cond) cout << ((cond) ? "Yes" : "No") << endl;
