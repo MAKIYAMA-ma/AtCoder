@@ -108,21 +108,49 @@ int main() {
     cin.tie(nullptr); cout.tie(nullptr);
 
     Def(n);
+    Def(m);
+    vpi line(m);
+    rep(i, m) {
+        cin >> line[i].first >> line[i].second;
+        line[i].first--;
+        line[i].second--;
+    }
+
     Def(q);
+    vi o(q), v1(q), v2(q);
+    vb stop(m, false);
+    rep(i, q) {
+        cin >> o[i];
+        if(o[i] == 1) {
+            cin >> v1[i];
+            v1[i]--;
+            v2[i] = -1;
+            stop[v1[i]] = true;
+        } else {
+            cin >> v1[i] >> v2[i];
+            v1[i]--;
+            v2[i]--;
+        }
+    }
+
     UnionFind uf;
     uf.init(n);
-
-    rep(i, q) {
-        Def(o);
-        Def(u);
-        Def(v);
-        u--;
-        v--;
-
-        if(o == 1) {
-            uf.merge(u, v);
-        } else {
-            Yes(uf.same(u, v));
+    rep(i, m) {
+        if(!stop[i]) {
+            uf.merge(line[i].first, line[i].second);
         }
+    }
+
+    vb answer;
+    rrep(i, q) {
+        if(o[i] == 1) {
+            uf.merge(line[v1[i]].first, line[v1[i]].second);
+        } else {
+            answer.push_back(uf.same(v1[i], v2[i]));
+        }
+    }
+
+    rrep(i, answer.size()) {
+        Yes(answer[i]);
     }
 }
