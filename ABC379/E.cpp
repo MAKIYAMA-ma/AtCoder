@@ -54,18 +54,6 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-ll Pow(ll x, ll n) {
-    ll ans = 1;
-    while(n > 0) {
-        if(n % 2) {
-            ans *= x;
-        }
-        x *= x;
-        n >>= 1;
-    }
-    return ans;
-}
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
@@ -74,17 +62,99 @@ int main() {
     string s;
     cin >> s;
 
-    vl base(n, 1);
+    // TODO 文字列として処理できるようにしないと無理
+#if 1
+    vl nums(n, 0);
+    vl ans(10*n, 0);
+    // 0からn-iまでの区間に同じ値を加えたいので、後で累積を計算する形でO(N)で計算できる
+    rep(i, n) {
+        int v = (s[i]-'0')*(i+1);
+        nums[0] += v;
+        if(i > 0) {
+            nums[n-i] -= v;
+        }
+    }
     srep(i, 1, n) {
-        base[i] = base[i-1]*10 + 1;
+        nums[i] += nums[i-1];
     }
 
-    ll ans{0};
+    ll up{0};
+    rep(i, n) {
+        ans[i] = (nums[i] + up) % 10;
+        up = (nums[i] + up) / 10;
+    }
+    int pos = n;
+    while(up > 0) {
+        int nv = (ans[pos] + up);
+        /* cout << "DB2:" << nv << endl; */
+        ans[pos] = nv % 10;
+        up = nv / 10;
+        pos++;
+    }
+    for(int i = pos-1; i >= 0; i--) {
+        cout << ans[i];
+    }
+    cout << endl;
+#elif 1
+    vl nums(n, 0);
+    vl ans(10*n, 0);
+    // TODO これだとO(N2)になってしまう
+    rep(i, n) {
+        int v = (s[i]-'0')*(i+1);
+        rep(j, n-i) {
+            nums[j] += v;
+        }
+    }
+
+    int up{0};
+    rep(i, n) {
+        ans[i] = (nums[i] + up) % 10;
+        up = (nums[i] + up) / 10;
+    }
+    int pos = n;
+    while(up > 0) {
+        int nv = (ans[pos] + up);
+        /* cout << "DB2:" << nv << endl; */
+        ans[pos] = nv % 10;
+        up = nv / 10;
+        pos++;
+    }
+    for(int i = pos-1; i >= 0; i--) {
+        cout << ans[i];
+    }
+    cout << endl;
+#else
+    vl ans(10*n, 0);
+    int maxpos = n-1;
     rep(i, n) {
         int v = s[i]-'0';
-        ans += (v*base[n-i-1] * (i+1));
-    }
-    cout << ans << endl;
+        int up{0};
 
-    // TODO 文字列として処理できるようにしないと無理
+        rep(j, n-i) {
+            int nv = (ans[j] + up + v*(i+1));
+            /* cout << "DB2:" << nv << endl; */
+            ans[j] = nv % 10;
+            up = nv / 10;
+        }
+        int pos = n-i;
+        while(up > 0) {
+            int nv = (ans[pos] + up);
+            /* cout << "DB2:" << nv << endl; */
+            ans[pos] = nv % 10;
+            up = nv / 10;
+            maxpos = max(maxpos, pos);
+            pos++;
+        }
+
+        /* cout << "DB:"; */
+        /* for(int i = maxpos; i >= 0; i--) { */
+        /*     cout << ans[i]; */
+        /* } */
+        /* cout << endl; */
+    }
+    for(int i = maxpos; i >= 0; i--) {
+        cout << ans[i];
+    }
+    cout << endl;
+#endif
 }
