@@ -103,13 +103,13 @@ int main() {
     rep(i, m) cin >> x[i] >> y[i] >> z[i];
     rep(i, tpn) {
         rep(j, m) {
-            grp[i].push_back(make_pair(i ^ ((1 << x[j] | 1 << y[j] | 1 << z[j])), 1));
+            grp[i].push_back(make_pair(i ^ ((1 << (x[j]-1) | 1 << (y[j]-1) | 1 << (z[j]-1))), 1));
         }
     }
 
-    cout << "------------" << endl;
-    cout << "start:" << start << endl;
-    cout << "------------" << endl;
+    /* cout << "------------" << endl; */
+    /* cout << "start:" << start << endl; */
+    /* cout << "------------" << endl; */
 
     vl cost(tpn, MAXLL);
     dijkstra(grp, start, cost);
