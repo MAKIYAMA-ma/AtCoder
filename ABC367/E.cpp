@@ -134,8 +134,8 @@ int main() {
     ll lvl{0};
     while(k > 0) {
         /* cout << "DB1:" << lvl << " " << k << endl; */
-        swap(ap, ac);
         if(k & 0x01) {
+            swap(ap, ac);
             rep(i, n) {
                 ac[i] = ap[x[lvl][i]];
             }
