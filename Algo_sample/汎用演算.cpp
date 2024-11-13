@@ -86,6 +86,7 @@ ll CountBit(ll n, int p) {
 
 /**
  * @brief 行列の積
+ *        indexはx[行][列]
  *
  * @param x
  * @param y
@@ -107,6 +108,7 @@ vector<vector<mint>> MultiArray(vector<vector<mint>> &x, vector<vector<mint>> &y
 
 /**
  * @brief 行列の累乗
+ *        indexはx[行][列]
  *
  * @param x
  * @param n
