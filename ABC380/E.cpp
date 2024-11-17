@@ -66,4 +66,57 @@ int main() {
     // 色の数の検索が必要
     // 位置の検索も必要
     // SegTreeとかの系統のデータ構造で何かできる？
+    vl col(n, 1);
+    set<ll> lft;
+    rep(i, n) lft.insert(i);
+    vl arcol(n);
+    rep(i, n) arcol[i] = i;
+
+    rep(i, q) {
+        Def(o);
+        if(o == 1) {
+            Def(x);
+            Def(c);
+            x--;
+            c--;
+
+            // xが含まれるエリアの先頭アドレス
+            auto it = lft.upper_bound(x);
+            it--;
+            auto pt = it;
+            auto l = *it;
+            int r;
+            pt++;
+            if(pt == lft.end()) {
+                r = n;
+            } else {
+                r = *pt;
+            }
+
+            // 書き換え対象色
+            auto tc = arcol[*it];
+            arcol[*it] = c;
+            col[tc] -= (r-l);
+            col[c] += (r-l);
+
+            // 右側の隣接エリアが同色な限り消していく
+            while(pt != lft.end() && arcol[*pt] == c) {
+                pt = lft.erase(pt);
+            }
+
+            // 左側の隣接エリアが同色な限り右のエリアを消していく
+            pt = it;
+            auto pre = pt;
+            pt--;
+            while(pre != lft.begin() && arcol[*pt] == c) {
+                lft.erase(pre);
+                pre = pt;
+                pt--;
+            }
+        } else {
+            Def(c);
+            c--;
+            cout << col[c] << endl;
+        }
+    }
 }
