@@ -67,6 +67,7 @@ int main() {
     // 全てのx,yから、水平垂直の距離の和がD以下である点の個数
     // 各x,y を中心に、対角線が2Dの正方形がダイヤ型に形成されるはず。
     // そのすべてのダイヤの共通部分に含まれる格子点の数が知りたいということ。
+    // ----> 違う！！！全てのx,yからの距離の和なので、対角2Dのダイヤではない！！！
     //
     // 範囲に影響するのは最大四つ
     // どれが影響する点か、計算で求まりそうな気もする
@@ -89,6 +90,11 @@ int main() {
     auto rdl = max_element(all(ymx)) - ymx.begin();
     auto lul = min_element(all(ymx)) - ymx.begin();
 
+    cout << "ldl : " << ldl << endl;
+    cout << "lul : " << lul << endl;
+    cout << "rdl : " << rdl << endl;
+    cout << "rul : " << rul << endl;
+
     auto lx = y[ldl] + x[ldl] - y[lul] + x[lul] - 4*d;
     if(lx > 0) lx++;
     lx /= 2;
@@ -101,6 +107,7 @@ int main() {
     for(int i = lx; i <= rx; i++) {
         auto ymax = min(i + y[lul] - x[lul] + 2*d, -i + y[rul] + x[rul] + 2*d);
         auto ymin = max(-i + y[ldl] + x[ldl] - 2*d, i + y[rdl] + x[rdl] - 2*d);
+        cout << "DB:" << i << " " << (ymax - ymin + 1) << endl;
         ans += (ymax - ymin + 1);
     }
     cout << ans << endl;
