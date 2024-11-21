@@ -70,6 +70,41 @@ int main() {
     Def(n);
     Def(l);
     Def(k);
+#if 1
+    DefA(a, n);
+    vl sz(n+1, 0);
+    rep(i, n) {
+        sz[i] = a[i] - ((i > 0) ? a[i-1] : 0);
+    }
+    sz[n] = l - a[n-1];
+
+    // 答えの二分探索でO(NlogN)でいける
+    int lft{0};
+    int rgt = l;
+    while(rgt - lft > 1) {
+        int m = (rgt + lft)/2;
+        int cnt{0};
+        int cur{0};
+        bool res{false};
+        rep(i, n+1) {
+            cur += sz[i];
+            if(cur >= m) {
+                cnt++;
+                cur = 0;
+                if(cnt >= k+1) {
+                    res = true;
+                    break;
+                }
+            }
+        }
+        if(res) {
+            lft = m;
+        } else {
+            rgt = m;
+        }
+    }
+    cout << lft << endl;
+#else
     vl a(n+1);
     rep(i, n) cin >> a[i];
     a[n] = l;
@@ -98,4 +133,5 @@ int main() {
         // 新しく融合された結果に合わせて次の融合候補を作ろうとすると、
         // pq内の要素を消せないとおかしくなる。。。
     }
+#endif
 }
