@@ -67,12 +67,12 @@ int main() {
     // 11223344 44
     ll ans{0};
     ll st{0};
-    vl pos(n+2, 0);
+    vl pos(n+2, -1);
     for(ll i = 0; i < n;) {
         if(a[i] != a[i+1]) {
             ans = max(ans, i - st);
             if(i > 0 && (a[i] == a[i-1])) {
-                pos[a[i]] = i;
+                pos[a[i]] = i-1;
                 st = i-1;
             } else {
                 st = i+1;
