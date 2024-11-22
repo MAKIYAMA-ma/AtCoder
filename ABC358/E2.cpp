@@ -54,13 +54,6 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-mint Factorical(ll n, ll m) {
-    mint ans = 1;
-    for(ll i = n; i > m; i--) {
-        ans *= i;
-    }
-    return ans;
-}
 
 int main() {
     ios_base::sync_with_stdio(false);
@@ -93,20 +86,15 @@ int main() {
     // O(26 * k * c)
     srep(i, 1, n) {
         srep(j, 1, k+1) {
-            mint combi = 1;
             dp[i][j] = dp[i-1][j];
             srep(l, 1, min(j, c[i])+1) {
-                combi *= (j-l+1);
-                combi /= l;
-                /* dp[i][j] += dp[i-1][j-l] * Factorical(j, j-l) / Factorical(l, 0); */
-                /* dp[i][j] += (dp[i-1][j-l] * fact[j] / fact[j-l] / fact[l]); */
-                mint dmy = dp[i-1][j-l] * fact[j] / fact[j-l] / fact[l];
-#if 0
-                // なぜかこれをするとTLEになる
-                // なぜ？？？？
-                dp[i][j] += dmy;
+#if 1
+                dp[i][j] += (dp[i-1][j-l] * fact[j] / (fact[j-l] * fact[l]));
+#else
+                // これだと処理時間が倍増してTLE
+                // mintは、割り算にことのほか弱いのかもしれない。
+                dp[i][j] += (dp[i-1][j-l] * fact[j] / fact[j-l] / fact[l]);
 #endif
-                dp[i][j] += dp[i-1][j-l] * combi;
             }
         }
     }
