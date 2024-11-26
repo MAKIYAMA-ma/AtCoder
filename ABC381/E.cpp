@@ -92,7 +92,7 @@ int main() {
     vl slash;
     // 左からの1の累積個数
     one[0] = ((s[0] == '1') ? 1 : 0);
-    // 左端が/でも無意味なので無視でいいや
+    if(s[0] == '/') slash.push_back(0);
     srep(i, 1, n) {
         one[i] = one[i-1];
         if(s[i] == '1') {
@@ -116,24 +116,29 @@ int main() {
         Def(R);
         L--; R--;
 
-        auto l = lower_bound(all(slash), L) - slash.begin();
-        auto r = upper_bound(all(slash), R) - slash.begin();
+        ll l = lower_bound(all(slash), L) - slash.begin();
+        ll r = upper_bound(all(slash), R) - slash.begin();
         /* cout << "DB:" << L << " " << R << endl; */
         /* cout << "DB2:" << l << " " << r << endl; */
+        /* if(l < slash.size()) cout << "DB3:" << slash[l] << endl; */
         if(l >= slash.size() || slash[l] > R) {
             cout << 0 << endl;
         } else {
+            ll done = ((L > 0) ? one[L-1] : 0);
+            ll dtwo = ((R < n-1) ? two[R+1] : 0);
             while((r - l) > 1) {
-                auto m = (l+r)/2;
-                auto oc = one[slash[m]] - ((L > 0) ? one[L-1] : 0);
-                auto tc = two[slash[m]] - ((R < n-1) ? two[R+1] : 0);
-                if(oc < tc) {
+                ll m = (l+r)/2;
+                ll oc = one[slash[m]] - done;
+                ll tc = two[slash[m]] - dtwo;
+                if(oc <= tc) {
                     l = m;
                 } else {
                     r = m;
                 }
             }
-            cout << min(one[slash[l]] - ((L > 0) ? one[L-1] : 0), two[slash[l]] - ((R < n-1) ? two[R+1] : 0))*2 + 1 << endl;
+            ll cand1 = min(one[slash[l]] - done, two[slash[l]] - dtwo);
+            ll cand2 = (r < slash.size()) ? min(one[slash[r]] - done, two[slash[r]] - dtwo) : 0;
+            cout << max(cand1, cand2)*2 + 1 << endl;
         }
     }
 }
