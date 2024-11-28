@@ -42,8 +42,6 @@ using vm2 = vector<vm>;
 #define PrintD(val) cout << fixed << setprecision(15) << (val) << endl;
 #define Def(n) ll n; cin >> n;
 #define DefA(a, n) vl a(n); rep(i, n) cin >> a[i];
-#define Def2A(a, b, n) vl a(n); rep(i, n) cin >> a[i] >> b[i];
-#define DefPA(a, n) vl a(n); rep(i, n) cin >> a[i].first >> a[i].second;
 
 const ll MAXLL = 1e18;
 const ll MINLL = -1e18;
@@ -59,4 +57,24 @@ const int MINI = -1e9;
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
+
+    Def(n);
+    vl a(n, 0);
+    rep(i, n) {
+        cin >> a[i];
+        a[i]++;
+    }
+    stack<int> st;
+    rep(i, n) {
+        auto hd = a[i];
+        while(!st.empty()) {
+            auto tl = st.top();
+            if(tl != hd) break;
+
+            st.pop();
+            hd++;
+        }
+        st.push(hd);
+    }
+    cout << st.size() << endl;
 }
