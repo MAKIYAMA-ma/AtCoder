@@ -169,6 +169,39 @@ ll LCM(ll a, ll b) {
 }
 
 
+/**
+ * @brief モジュラ逆元を求める（拡張ユークリッドの互除法）
+ *
+ * @param a
+ * @param k
+ *
+ * @return 
+ */
+ll ModularInverse(Ll A, Ll K) {
+    ll b = k, u = 1, v = 0;
+    while (b > 0) {
+        ll t = a / b;
+        a -= t * b; swap(a, b);
+        u -= t * v; swap(u, v);
+    }
+    return (u % k + k) % k;
+}
+
+
+/**
+ * @brief (a * b) % base = md となるbを求める
+ *
+ * @param a
+ * @param base
+ * @param md
+ *
+ * @return 
+ */
+ll RevMod(ll a, ll base, ll md) {
+    return (md * ModularInverse(a, base)) % base;
+}
+
+
 int main() {
     ll n;
     cin >> n;
