@@ -107,7 +107,7 @@ int main() {
     ll cnt{0};
 
     rep(i, FIN+1) {
-        if(ind < n && i >= lr[ind].first) {
+        while(ind < n && i >= lr[ind].first) {
             if(lr[ind].second >= cur) {
                 cnt++;
                 cur = lr[ind].first + k;
@@ -119,7 +119,7 @@ int main() {
 
     cur = ind = cnt = 0;
     rep(i, FIN+1) {
-        if(ind < n && i >= rl[ind].first) {
+        while(ind < n && i >= rl[ind].first) {
             if(rl[ind].second >= cur) {
                 cnt++;
                 cur = rl[ind].first + k;
