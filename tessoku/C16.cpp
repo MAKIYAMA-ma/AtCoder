@@ -65,17 +65,51 @@ int main() {
     Def(m);
     Def(k);
 
-    vector<pair<pl, pl>> flt(m);
+#if 1
+    vpl sp(m), dp(m);
+    vpl2 air(n, vpl());
+    vpl order(2*m);
     rep(i, m) {
         Def(a);
         Def(s);
         Def(b);
         Def(t);
         a--; b--;
-        flt[i] = make_pair(make_pair(t, s), make_pair(a, b));
-    }
-    sort(all(flt));
+        sp[i].first = s;
+        sp[i].second = a;
+        dp[i].first = t + k;
+        dp[i].second = b;
+        // 同時刻なら到着が先に処理されるように、~mが到着、~2mが出発として番号を割り振る
+        air[a].push_back(make_pair(s, i+m));
+        air[b].push_back(make_pair(t+k, i));
 
+        order.push_back(make_pair(s, i+m));
+        order.push_back(make_pair(t+k, i));
+    }
+    rep(i, n) {
+        sort(all(air[i]));
+    }
+    sort(all(order));
+
+    vpl2 line(2*m + 2, vpl());
+    // 飛行機に乗る経路
+    rep(i, m) {
+        line[i+m].push_back(make_pair(i, 1));
+    }
+    // 空港で待機する経路
+    for(auto a : air) {
+        rep(i, a.size()-1) {
+            line[a[i].second].push_back(make_pair(a[i+1].second, 0));
+        }
+    }
+    vl ans(2*m);
+    for(auto &[tm, ind] : order) {
+        for(pl l : line[ind]) {
+            ans[l.first] = max(ans[l.first], ans[ind] + l.second);
+        }
+    }
+    cout << *max_element(all(ans)) << endl;
+#else
     // なるべく多く選択したい区間スケジューリングではあるが、
     // 選ぶものごとに次に選べるものが異なる
     // 区間スケジューリングの延長でいける気はしない。。。
@@ -97,4 +131,5 @@ int main() {
 
         dp[i+1][t] = 
     }
+#endif
 }
