@@ -67,10 +67,13 @@ int main() {
     // 現在の要素数をもとに、何番になったら出すか決める。
     // でもO(Q)かというと微妙？中央入れの際に
     // -> 違う。中央入れのほうも常に最後尾でいいはず
+    // ----> 違う。立て続けに中央に入れれば、前に来たり後に来たりする。
+    // setで管理？その場合、cntが当初のindexを超えたら出してOKか？
+    // ----> setじゃダメ
+    //       後から同じindexが来るのを前に入れないといけない
+    //       何で管理すればいい？？？
 
-    ll cnt{0};
-    queue<string> l;
-    queue<pair<ll, string>> m;
+    deque<string> ph, bh;
     rep(i, q) {
         char odr;
         cin >> odr;
@@ -79,7 +82,8 @@ int main() {
                 {
                     string s;
                     cin >> s;
-                    l.push(s);
+
+                    bh.push_back(s);
                 }
                 break;
             case 'B':
@@ -87,28 +91,25 @@ int main() {
                     string s;
                     cin >> s;
 
-                    m.push(make_pair((l.size() + m.size() + cnt)/2, s));
+                    bh.push_front(s);
                 }
                 break;
             case 'C':
                 {
-                    if(cnt == m.front().first) {
-                        m.pop();
-                    } else {
-                        l.pop();
-                    }
-                    cnt++;
+                    ph.pop_front();
                 }
                 break;
             case 'D':
                 {
-                    if(cnt == m.front().first) {
-                        cout << m.front().second << endl;
-                    } else {
-                        cout << l.front() << endl;
-                    }
+                    cout << ph.front() << endl;
                 }
                 break;
+        }
+
+        while(ph.size() < bh.size()) {
+            auto tmp = bh.front();
+            bh.pop_front();
+            ph.push_back(tmp);
         }
     }
 }
