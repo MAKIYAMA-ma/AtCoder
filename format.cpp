@@ -42,7 +42,7 @@ using vm2 = vector<vm>;
 #define PrintD(val) cout << fixed << setprecision(15) << (val) << endl;
 #define Def(n) ll n; cin >> n;
 #define DefA(a, n) vl a(n); rep(i, n) cin >> a[i];
-#define Def2A(a, b, n) vl a(n); rep(i, n) cin >> a[i] >> b[i];
+#define Def2A(a, b, n) vl a(n); vl b(n); rep(i, n) cin >> a[i] >> b[i];
 #define DefPA(a, n) vl a(n); rep(i, n) cin >> a[i].first >> a[i].second;
 
 const ll MAXLL = 1e18;
