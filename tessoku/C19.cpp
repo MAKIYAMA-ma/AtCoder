@@ -64,11 +64,17 @@ int main() {
     Def(n);
     Def(l);
     Def(k);
-    vl a(n+2, 0), c(n+2, 0);
+    vpl ac(n+2, {0, 0});
     rep(i, n) {
-        cin >> a[i+1] >> c[i+1];
+        cin >> ac[i+1].first >> ac[i+1].second;
     }
-    a[n+1] = l;
+    ac[n+1].first = l;
+    sort(all(ac));
+    vl a(n+2, 0), c(n+2, 0);
+    rep(i, n+2) {
+        a[i] = ac[i].first;
+        c[i] = ac[i].second;
+    }
 
     // 到達可能範囲で最安のスタンドでガソリンを入れる。
     // Kキロ以内にもっと安いスタンドがあればそこまで到達可能なガソリンを入れる
@@ -100,6 +106,12 @@ int main() {
             rest = k;
             /* cout << "DB2:" << ming << " " << ans << endl; */
         } else {
+            srep(i, ming+1, up2) {
+                if(c[ming] >= c[i]) {
+                    ming2 = i;
+                    break;
+                }
+            }
             // ming2までの分を入れる
             ans += (c[ming]*(a[ming2]-a[ming]-rest));
             rest = a[ming2]-a[ming];
