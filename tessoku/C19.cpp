@@ -81,6 +81,45 @@ int main() {
     // ないなら満タンまで入れる
     // を繰り返せば良いはず。
     // ただし、最後はゴールまでの分だけ入れれば良い。
+#if 1
+    rep(i, n+1) {
+        if(a[i+1] - a[i] > k) {
+            cout << -1 << endl;
+            return 0;
+        }
+    }
+
+    ll pos{0};
+    ll tgt{0};
+    ll ans{0};
+    ll rest = k;
+    while(pos < n+1) {
+        ll mv{MAXLL}, mi{0};
+        tgt = pos;
+        while(a[++tgt] - a[pos] <= k) {
+            if(c[tgt] <= c[pos]) {
+                break;
+            } else if(c[tgt] <= mv) {
+                mv = c[tgt];
+                mi = tgt;
+            }
+        }
+        /* cout << "    " << mi << " " << tgt << endl; */
+
+        if(a[tgt] - a[pos] <= k) {
+            ans += c[pos]*(a[tgt]-a[pos]-rest);
+            /* cout << "DB1:" << pos << "-->" << tgt << " " << ans << endl; */
+            rest = 0;
+            pos = tgt;
+        } else {
+            ans += c[pos]*(k-rest);
+            /* cout << "DB2:" << pos << "-->" << mi << " " << ans << endl; */
+            rest = k-(a[mi]-a[pos]);
+            pos = mi;
+        }
+    }
+    cout << ans << endl;
+#else
     ll pos{0};
     ll ans{0};
     ll rest = k;
@@ -122,4 +161,5 @@ int main() {
         ming = ming2;
     }
     cout << ans << endl;
+#endif
 }
