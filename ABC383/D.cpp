@@ -120,17 +120,27 @@ int main() {
 #if 1
     vl prm;
     ll sq = (ll)sqrt(n);
-    srep(i, 2, sq+1) {
+    srep(i, 2, sq) {
         if(isPrime(i)) prm.push_back(i);
     }
+    /* cout << "----------" << endl; */
+    /* rep(i, prm.size()) { */
+    /*     cout << i << " " << prm[i] << endl; */
+    /* } */
+    /* cout << "----------" << endl; */
     rep(i, prm.size()) {
         auto s = prm[i];
-        auto tmp = upper_bound(prm.begin()+i+1, prm.end(), sq/s) - (prm.begin()+i+1);
-        if(tmp > 0) {
-            /* cout << "DB:" << s << " " << tmp << endl; */
-            ans += tmp;
+        auto tmp = upper_bound(prm.begin()+i+1, prm.end(), sq/s);
+        /* cout << "DB1:" << *(prm.begin()+i+1) << " " << (sq+s)/s << endl; */
+        auto tmp2 = tmp - (prm.begin()+i+1);
+        if(tmp2 > 0) {
+            /* cout << "DB:" << s << " " << tmp2 << endl; */
+            ans += tmp2;
         } else {
             break;
+        }
+        if(s*s*s*s <= sq) {
+            ans++;
         }
     }
 #else
