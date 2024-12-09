@@ -56,6 +56,108 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
+/**
+ * @brief SegmentTreeクラス
+ * init時、操作をtypeで指定する。
+ * 0: 総和
+ * 1: MAX
+ * 2: MIN
+ */
+class SegmentTree {
+    public:
+        vl tree;
+        int n;
+        int type;   // 0:累積, 1:max, 2:min
+
+        /**
+         * @brief 初期関数。要素数と演算のタイプを指定する。
+         *
+         * @param n_
+         * @param t
+         */
+        void init(int n_, int t) {
+            type = t;
+            n = 1;
+            while(n < n_) n *= 2;
+            switch(type) {
+                case 0: tree.resize(2 * n, 0); break;
+                case 1: tree.resize(2 * n, MINLL); break;
+                case 2: tree.resize(2 * n, MAXLL); break;
+            }
+        }
+
+        /**
+         * @brief idx番の要素をvalに更新する
+         *
+         * @param idx
+         * @param val
+         */
+        void update(int idx, ll val) {
+            idx += (n-1);
+            tree[idx] = val;
+            while(idx > 0) {
+                idx = (idx-1) / 2; // 親ノード
+                switch(type) {
+                    case 0: tree[idx] = tree[2*idx + 1] + tree[2*idx + 2]; break;
+                    case 1: tree[idx] = max(tree[2*idx + 1], tree[2*idx + 2]); break;
+                    case 2: tree[idx] = min(tree[2*idx + 1], tree[2*idx + 2]); break;
+                }
+            }
+        }
+
+        /**
+         * @brief [a, b)の範囲の演算結果を取得する
+         *
+         * @param a
+         * @param b
+         *
+         * @return 演算結果
+         */
+        ll ask(int a, int b) {
+            switch(type) {
+                case 0: return query_add(a, b, 0, 0, n); break;
+                case 1: return query_max(a, b, 0, 0, n); break;
+                case 2: return query_min(a, b, 0, 0, n); break;
+            }
+            return 0;
+        }
+
+    private:
+        ll query_add(int a, int b, int idx, int left, int right) {
+            //考えようとしている区間が、[a,b)に全く含まれないなら、0を返して、操作に影響しないようにする。
+            if (a >= right || b <= left) return 0;
+
+            //考えようとしている区間が[a,b)に完全に含まれているなら、その値を返せばよい。
+            if (a <= left && b >= right) return tree[idx];
+
+            //どちらでもない場合、tree[idx]の2つの子ノードに対して再帰的に操作を行う。
+            ll value_1 = query_add(a, b, 2 * idx + 1, left, (left + right) / 2);
+            ll value_2 = query_add(a, b, 2 * idx + 2, (left + right) / 2, right);
+            return value_1 + value_2;
+        }
+
+        ll query_max(int a, int b, int idx, int left, int right) {
+            //考えようとしている区間が、[a,b)に全く含まれないなら、MINを返して、操作に影響しないようにする。
+            if (a >= right || b <= left) return MINLL;
+
+            if (a <= left && b >= right) return tree[idx];
+
+            ll value_1 = query_max(a, b, 2 * idx + 1, left, (left + right) / 2);
+            ll value_2 = query_max(a, b, 2 * idx + 2, (left + right) / 2, right);
+            return max(value_1, value_2);
+        }
+
+        ll query_min(int a, int b, int idx, int left, int right) {
+            //考えようとしている区間が、[a,b)に全く含まれないなら、MAXを返して、操作に影響しないようにする。
+            if (right <= a || b <= left) return MAXLL;
+
+            if (a <= left && right <= b) return tree[idx];
+
+            ll value_1 = query_min(a, b, 2 * idx + 1, left, (left + right) / 2);
+            ll value_2 = query_min(a, b, 2 * idx + 2, (left + right) / 2, right);
+            return min(value_1, value_2);
+        }
+};
 
 int main() {
     ios_base::sync_with_stdio(false);
@@ -64,6 +166,37 @@ int main() {
     Def(n);
     Def(l);
     Def(k);
+
+#if 1
+    // i~i+1 kmの区間を進むためのガソリンは、i-K~i-1の区間の最安値で入れればよい
+    Def2A(a, c, n);
+
+    SegmentTree st;
+    st.init(l, 2);
+
+    // 同じ地点に複数スタンドがある場合は最安値のみ考慮
+    vl minc(l+1, MAXLL);
+    rep(i, n) {
+        minc[a[i]] = min(minc[a[i]], c[i]);
+    }
+    rep(i, l+1) {
+        st.update(i, minc[i]);
+    }
+    ll ans{0};
+    rep(i, l-k) {
+        ans += st.ask(i+1, i+k+1);
+        if(ans >= MAXLL) {
+            cout << -1 << endl;
+            return 0;
+        }
+    }
+    cout << ans << endl;
+#elif 1
+    // 到達可能範囲で最安のスタンドでガソリンを入れる。
+    // Kキロ以内にもっと安いスタンドがあればそこまで到達可能なガソリンを入れる
+    // ないなら満タンまで入れる
+    // を繰り返せば良いはず。
+    // ただし、最後はゴールまでの分だけ入れれば良い。
     vpl ac(n+2, {0, 0});
     rep(i, n) {
         cin >> ac[i+1].first >> ac[i+1].second;
@@ -75,13 +208,6 @@ int main() {
         a[i] = ac[i].first;
         c[i] = ac[i].second;
     }
-
-    // 到達可能範囲で最安のスタンドでガソリンを入れる。
-    // Kキロ以内にもっと安いスタンドがあればそこまで到達可能なガソリンを入れる
-    // ないなら満タンまで入れる
-    // を繰り返せば良いはず。
-    // ただし、最後はゴールまでの分だけ入れれば良い。
-#if 1
     rep(i, n+1) {
         if(a[i+1] - a[i] > k) {
             cout << -1 << endl;
