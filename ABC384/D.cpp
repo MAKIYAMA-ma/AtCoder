@@ -65,7 +65,7 @@ int main() {
     DefA(a, n);
 
     ll sm = reduce(all(a));
-    vl ac(n*2+1, 0);
+    vl ac(n*3+1, 0);
     rep(i, n) {
         ac[i+1] = ac[i]+a[i];
     }
@@ -83,8 +83,8 @@ int main() {
             }
         }
     } else {
-        s %= (sm*2);
-        ll tgt = sm*2 - s;
+        s %= (sm);
+        ll tgt = sm - s;
         ll r{0};
         rep(i, n+1) {
             while(r < ac.size()-1 && ac[r]-ac[i] < tgt) r++;
