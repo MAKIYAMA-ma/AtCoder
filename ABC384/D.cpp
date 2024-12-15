@@ -65,7 +65,6 @@ int main() {
     DefA(a, n);
 
     ll sm = reduce(all(a));
-    s %= (sm*2);
     vl ac(n*2+1, 0);
     rep(i, n) {
         ac[i+1] = ac[i]+a[i];
@@ -73,25 +72,31 @@ int main() {
     rep(i, n) {
         ac[n+i+1] = ac[n+i]+a[i];
     }
-    ll tgt = sm - s;
-    rep(i, n+1) {
-        auto lp = lower_bound(all(ac), ac[i]+tgt);
-        if(lp != ac.end() && *lp == (ac[i]+tgt)) {
-            cout << "Yes" << endl;
-            return 0;
+
+    if(sm >= s) {
+        ll r{0};
+        rep(i, n+1) {
+            while(r < ac.size()-1 && ac[r]-ac[i] < s) r++;
+            if(ac[r] == ac[i]+s) {
+                Yes(1);
+                return 0;
+            }
         }
-    }
-    tgt = sm*2 - s;
-    rep(i, n+1) {
-        auto lp = lower_bound(all(ac), ac[i]+tgt);
-        if(lp != ac.end() && *lp == (ac[i]+tgt)) {
-            cout << "Yes" << endl;
-            return 0;
+    } else {
+        s %= (sm*2);
+        ll tgt = sm*2 - s;
+        ll r{0};
+        rep(i, n+1) {
+            while(r < ac.size()-1 && ac[r]-ac[i] < tgt) r++;
+            if(ac[r] == ac[i]+tgt) {
+                Yes(1);
+                return 0;
+            }
         }
+        /* cout << sm << " " << s << " " << tgt << endl; */
+        /* rep(i, n+1) { */
+        /*     cout << ac[i] << endl; */
+        /* } */
     }
-    /* cout << sm << " " << s << " " << tgt << endl; */
-    /* rep(i, n+1) { */
-    /*     cout << ac[i] << endl; */
-    /* } */
-    cout << "No" << endl;
+    Yes(0);
 }
