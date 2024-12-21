@@ -81,39 +81,58 @@ int main() {
         cin >> d;
         Def(c);
         switch(d) {
-            case 'U': nx -= c; break;
-            case 'D': nx += c; break;
-            case 'L': ny -= c; break;
-            case 'R': ny += c; break;
+            case 'U': ny += c; break;
+            case 'D': ny -= c; break;
+            case 'L': nx -= c; break;
+            case 'R': nx += c; break;
         }
 
         if(d == 'U' || d == 'D') {
-            if(find(all(yh), sy) != yh.end()) {
-                ll sp = yh[sy].lower_bound(sx);
-                ll gp = yh[sy].lower_bound(nx);
-                if(gp > sp) {
-                    ans += (gp - sp);
-                    for(auto pt = sp; pt < gp; pt++) {
-                        xh[*pt].erase(sy);
+            /* cout << "DB1" << endl; */
+            if(xh.find(sx) != xh.end()) {
+                /* cout << "DB2" << endl; */
+                auto sp = xh[sx].lower_bound(min(sy, ny));
+                /* cout << "DB3" << endl; */
+                auto gp = xh[sx].upper_bound(max(sy, ny));
+                /* cout << "DB4" << endl; */
+                auto cnt = distance(sp, gp);
+                /* cout << "DB5:" << cnt << " " << *sp << " " << *gp << endl; */
+                if(cnt > 0) {
+                    ans += cnt;
+                    for(auto pt = sp; pt != gp; pt++) {
+                        /* cout << "DB6" << endl; */
+                        yh[*pt].erase(sx);
+                        /* cout << "DB7" << endl; */
                     }
-                    yh.erase(sp, gp);
+                    xh[sx].erase(sp, gp);
                 }
+                /* cout << "DB8" << endl; */
             }
         } else {
-            if(find(all(xh), sx) != xh.end()) {
-                ll sp = xh[sx].lower_bound(sx);
-                ll gp = xh[sx].lower_bound(nx);
-                if(gp > sp) {
-                    ans += (gp - sp);
-                    for(auto pt = sp; pt < gp; pt++) {
-                        yh[*pt].erase(sx);
+            /* cout << "DB9" << endl; */
+            if(yh.find(sy) != yh.end()) {
+                /* cout << "DB10" << endl; */
+                auto sp = yh[sy].lower_bound(min(sx, nx));
+                /* cout << "DB11" << endl; */
+                auto gp = yh[sy].upper_bound(max(sx, nx));
+                /* cout << "DB12" << endl; */
+                auto cnt = distance(sp, gp);
+                /* cout << "DB13:" << cnt << " " << *sp << " " << *gp << endl; */
+                if(cnt > 0) {
+                    ans += cnt;
+                    for(auto pt = sp; pt != gp; pt++) {
+                        /* cout << "DB14" << endl; */
+                        xh[*pt].erase(sy);
+                        /* cout << "DB15" << endl; */
                     }
-                    xh.erase(sp, gp);
+                    yh[sy].erase(sp, gp);
                 }
+                /* cout << "DB16" << endl; */
             }
         }
         sx = nx;
         sy = ny;
+        /* cout << "DB:" <<  sx << " " << sy << " " << ans << endl; */
     }
     cout << sx << " " << sy << " " << ans << endl;
 }
