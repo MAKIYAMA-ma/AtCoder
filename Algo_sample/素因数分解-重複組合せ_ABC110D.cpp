@@ -61,7 +61,7 @@ bool isPrime(ll n) {
  */
 void PrimeFact(ll n, map<int, int> &prm) {
     int tmp = n;
-    for(int i = 2; i <= tmp; i++) {
+    for(ll i = 2; i*i <= tmp; i++) {
         // iが素数かどうかの判定は不要
         // iが素数でないなら、iの約数による割り算がもっと前に完了している
         while(tmp % i == 0) {
@@ -69,6 +69,7 @@ void PrimeFact(ll n, map<int, int> &prm) {
             tmp /= i;
         }
     }
+    if(tmp >= 2) prm[tmp]++;
     /* cout << "------------" << endl; */
     /* for(auto p : prm) { */
     /*     cout << p.first << ":" << p.second << endl; */

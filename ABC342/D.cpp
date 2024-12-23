@@ -93,7 +93,7 @@ bool isPrime(ll n) {
  */
 void PrimeFact(ll n, map<ll, ll> &prm) {
     ll tmp = n;
-    for(ll i = 2; i <= tmp; i++) {
+    for(ll i = 2; i*i <= tmp; i++) {
         // iが素数かどうかの判定は不要
         // iが素数でないなら、iの約数による割り算がもっと前に完了している
         while(tmp % i == 0) {
@@ -101,6 +101,7 @@ void PrimeFact(ll n, map<ll, ll> &prm) {
             tmp /= i;
         }
     }
+    if(tmp >= 2) prm[tmp]++;
     /* cout << "------------" << endl; */
     /* for(auto p : prm) { */
     /*     cout << p.first << ":" << p.second << endl; */
@@ -124,6 +125,8 @@ int main() {
     // ということになるはずだが、
     // N <= 2*10^5
     // なので、個別にチェックは当然NG
+    //
+    // 一つずつ素因数分解するとTLE
     map<ll, ll> cnt;
     for(auto [vv, vc] : vals) {
         if(vv == 0) {
