@@ -32,7 +32,7 @@ using vb2 = vector<vb>;
 using vd2 = vector<vd>;
 using vm2 = vector<vm>;
 
-#define rep(i, n) for(ll i = 0; i < (ll)(n); i++)
+#define rep(i, n) for(int i = 0; i < (int)(n); i++)
 #define rrep(i, n) for(ll i = (ll)(n)-1; i >= 0; i--)
 #define srep(i, s, n) for(ll i = (ll)(s); i < (ll)(n); i++)
 #define all(vec) (vec).begin(), (vec).end()
@@ -56,8 +56,8 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-void dijkstra(vpl2 &graph, ll start, vl &cost) {
-    priority_queue<pl, vpl, greater<pl>> q;   // {cost, index}
+void dijkstra(vpi2 &graph, int start, vi &cost) {
+    priority_queue<pi, vpi, greater<pi>> q;   // {cost, index}
     cost.at(start) = 0;
     q.push(make_pair(0, start));
 
@@ -72,7 +72,7 @@ void dijkstra(vpl2 &graph, ll start, vl &cost) {
         }
         rep(i, graph.at(from).size()) {
             int to = graph.at(from).at(i).first;
-            ll nc = graph.at(from).at(i).second + cst;
+            int nc = graph.at(from).at(i).second + cst;
 
             if(nc < cost.at(to)) {
                 cost.at(to) = nc;
@@ -86,7 +86,8 @@ int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
-    Def(n);
+    int n;
+    cin >> n;
     vs s(n);
     rep(i, n) cin >> s[i];
 
@@ -98,9 +99,9 @@ int main() {
     // 引っ掛からない移動が何回必要かが重要
     //
     // N <= 60
-    vpl2 mp (n*n*n*n, vpl());
-    vl dx = {1, -1, 0, 0};
-    vl dy = {0, 0, 1, -1};
+    vpi2 mp (n*n*n*n, vpi());
+    vi dx = {1, -1, 0, 0};
+    vi dy = {0, 0, 1, -1};
     rep(i, n) {
         rep(j, n) {
             rep(k, n) {
@@ -120,7 +121,11 @@ int main() {
                             nl = l;
                         }
                         if(i != ni || j != nj || k != nk || l != nl) {
-                            mp[i + j*n + k*n*n + l*n*n*n].push_back(make_pair(ni + nj*n + nk*n*n + nl*n*n*n, 1));
+                            if((ni*n+nj) < (nk*n+nl)) {
+                                mp[i + j*n + k*n*n + l*n*n*n].push_back(make_pair(ni + nj*n + nk*n*n + nl*n*n*n, 1));
+                            } else {
+                                mp[i + j*n + k*n*n + l*n*n*n].push_back(make_pair(nk + nl*n + ni*n*n + nj*n*n*n, 1));
+                            }
                         }
                     }
                 }
@@ -128,7 +133,7 @@ int main() {
         }
     }
 
-    vl ps;
+    vi ps;
     rep(i, n) {
         rep(j, n) {
             if(s[i][j] == 'P') {
@@ -137,21 +142,21 @@ int main() {
             }
         }
     }
-    ll st{0}, base{1};
+    int st{0}, base{1};
     rep(i, ps.size()) {
         st += base*ps[i];
         base *= n;
     }
 
-    vl cost(n*n*n*n, MAXLL);
+    vi cost(n*n*n*n, MAXI);
     dijkstra(mp, st, cost);
-    ll ans{MAXLL};
+    int ans{MAXI};
     rep(i, n) {
         rep(j, n) {
             ans = min(ans, cost[i + j*n + i*n*n + j*n*n*n]);
         }
     }
-    if(ans >= MAXLL) {
+    if(ans >= MAXI) {
         ans = -1;
     }
     cout << ans << endl;
