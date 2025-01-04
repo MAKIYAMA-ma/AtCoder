@@ -111,7 +111,7 @@ int main() {
                         /* cout << "DB2:" << ni*w+nj << " " << i*w+j+h*w << endl; */
                         mp[i*w+j].push_back(make_pair(ni*w+nj+h*w, 1));
                         /* mp[ni*w+nj+h*w].push_back(make_pair(i*w+j, 1)); */
-                        mp[ni*w+nj].push_back(make_pair(i*w+j+h*w, 1));
+                        /* mp[ni*w+nj].push_back(make_pair(i*w+j+h*w, 1)); */
                         /* mp[i*w+j+h*w].push_back(make_pair(ni*w+nj, 1)); */
                     }
                 }
@@ -122,7 +122,7 @@ int main() {
                         /* cout << "DB1:" << i*w+j << " " << ni*w+nj+h*w << endl; */
                         /* cout << "DB2:" << ni*w+nj << " " << i*w+j+h*w << endl; */
                         /* mp[i*w+j].push_back(make_pair(ni*w+nj+h*w, 1)); */
-                        mp[ni*w+nj+h*w].push_back(make_pair(i*w+j, 1));
+                        /* mp[ni*w+nj+h*w].push_back(make_pair(i*w+j, 1)); */
                         /* mp[ni*w+nj].push_back(make_pair(i*w+j+h*w, 1)); */
                         mp[i*w+j+h*w].push_back(make_pair(ni*w+nj, 1));
                     }
