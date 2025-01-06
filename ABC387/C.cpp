@@ -73,25 +73,59 @@ ll check(ll n) {
     ll tmp = n;
     ll kt{0};
     ll hd{0};
+
     while(tmp) {
         kt++;
         if(tmp!=0) hd = tmp;
         tmp /= 10;
     }
-    ll cr{1};
+
+    // n自体が蛇数か否か判定
+    bool snk{true};
+    tmp = n;
+    while(tmp >= 10) {
+        if(tmp % 10 >= hd) {
+            snk = false;
+            break;
+        }
+        tmp /= 10;
+    }
+
+    // kt桁の数字で、頭からx桁がnと一致する場合の蛇数のカウント
+    // 下からたどって、頭数以上の数字が登場したら一旦リセット（その数字がnと一致する前提なら、全て蛇数ではない）
+    ll cr{0};
     tmp = n;
     /* cout << "DB:" << kt << endl; */
-    while(tmp) {
+    while(tmp >= 10) {
         ll b = tmp%10;
         if(b >= hd) {
-            ans += Pow(hd, cr);
+            ans = hd*Pow(hd, cr);
         } else {
-            ans += (b+1)*Pow(hd, cr-1);
+            ans += b*Pow(hd, cr);
         }
         /* cout << "DB2:" << b << " " << hd << " " << ans << endl; */
         cr++;
         tmp /= 10;
     }
+
+    // nが蛇数なら、n自身をカウント
+    if(snk) ans++;
+    /* cout << "DB3:" << ans << endl; */
+
+    // kt桁で、頭数がnのモノより小さい場合の蛇数をカウント
+    srep(i, 1, hd) {
+        ans += Pow(i, kt-1);
+    }
+    /* cout << "DB4:" << ans << endl; */
+
+    // kt桁未満の蛇数をカウント
+    srep(i, 1, kt) {
+        srep(j, 1, 10) {
+            ans += Pow(j, i-1);
+            /* cout << "DB4-1:" << i << " " << j << " " << ans << endl; */
+        }
+    }
+    /* cout << "DB5:" << ans << endl; */
     return ans;
 }
 
@@ -102,7 +136,12 @@ int main() {
     Def(l);
     Def(r);
 
-    cout << check(r) << endl;
-    cout << check(l) << endl;
-    cout << check(r) - check(l) << endl;
+#if 1
+    cout << check(r) - check(l-1) << endl;
+#else
+    ll cl = check(l);
+    ll cr = check(r);
+
+    cout << cl << " " << cr << endl;
+#endif
 }
