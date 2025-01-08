@@ -132,13 +132,21 @@ int main() {
             ll ind{0};
             ll c{0};
             while(ta[j][i] != tb[ind][i] || c < cnt[ta[j][i]]) {
-                ind++;
                 if(ta[j][i] == tb[ind][i]) c++;
+                ind++;
             }
             l[i][j] = ind;
             cnt[ta[j][i]]++;
         }
     }
+    /* cout << "----------" << endl; */
+    /* rep(i, l.size()) { */
+    /*     rep(j, l[0].size()) { */
+    /*         cout << l[i][j] << " "; */
+    /*     } */
+    /*     cout << endl; */
+    /* } */
+    /* cout << "----------" << endl; */
     rep(i, h) {
         srep(j, i+1, h) {
             rep(k, w) {
@@ -166,13 +174,21 @@ int main() {
             ll ind{0};
             ll c{0};
             while(ta2[j][i] != tb2[ind][i] || c < cnt[ta2[j][i]]) {
-                ind++;
                 if(ta2[j][i] == tb2[ind][i]) c++;
+                ind++;
             }
             l2[i][j] = ind;
             cnt[ta2[j][i]]++;
         }
     }
+    /* cout << "----------" << endl; */
+    /* rep(i, l2.size()) { */
+    /*     rep(j, l2[0].size()) { */
+    /*         cout << l2[i][j] << " "; */
+    /*     } */
+    /*     cout << endl; */
+    /* } */
+    /* cout << "----------" << endl; */
     rep(i, w) {
         srep(j, i+1, w) {
             rep(k, h) {
