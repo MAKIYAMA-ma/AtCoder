@@ -56,14 +56,87 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
+typedef struct st_node{
+    struct st_node* b;
+    struct st_node* n;
+    char d;
+} NODE;
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
     string s;
     cin >> s;
+    string t = "ABC";
 
     // ABCを消す順番は考慮不要。
     // 一度できたABCが、他のABCを消す際に崩れることはない
     // s.length() <= 2*10^5
+#if 1
+    vector<NODE> lst(s.length(), {NULL, NULL, '.'});
+    rep(i, s.length()) {
+        lst[i].b = ((i > 0) ? &lst[i-1] : NULL);
+        lst[i].n = ((i < s.length()-1) ? &lst[i+1] : NULL);
+        lst[i].d = s[i];
+    }
+    NODE *nd = &lst[0];
+    NODE *top = nd;
+    while(nd != NULL) {
+        NODE *sch = nd;
+        bool clr{true};
+        rep(i, t.length()) {
+            if(sch == NULL || sch->d != t[i]) {
+                clr = false;
+                break;
+            }
+            sch = sch->n;
+        }
+        if(clr) {
+            if(nd->b == NULL) {
+                if(sch != NULL) sch->b = NULL;
+                top = sch;
+                nd = sch;
+            } else {
+                nd->b->n = sch;
+                if(sch != NULL) sch->b = nd->b;
+                rep(i, t.length()-1) {
+                    if(nd->b != NULL) nd = nd->b;
+                }
+            }
+        } else {
+            nd = nd->n;
+        }
+    }
+    nd = top;
+    while(nd != NULL) {
+        cout << nd->d;
+        nd = nd->n;
+    }
+    cout << endl;
+#else
+    ll i{0};
+    while(i < s.length()) {
+        bool tg{true};
+        ll j{0}
+        while((j < t.length()) && (i+j < s.length())) {
+            if(s[i+j] == '#')
+            if(s[i+j] != t[j]) {
+                tg = false;
+                break;
+            }
+        }
+        if(tg) {
+            rep(j, t.length()) s[i+j] = '#';
+            i = min(0LL, i-t.length());
+        } else {
+            i++;
+        }
+        cout << "DB:" << s << endl;
+    }
+    rep(i, s.length()) {
+        if(s[i] != '#') cout << s[i];
+    }
+    cout << endl;
+#endif
 }
