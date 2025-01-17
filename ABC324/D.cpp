@@ -61,67 +61,56 @@ int main() {
     cin.tie(nullptr); cout.tie(nullptr);
 
     Def(n);
-    string td;
-    vs s(n);
-    cin >> td;
-    rep(i, n) cin >> s[i];
+    string s;
+    cin >> s;
 
-    // 最大5*10^5文字
-    set<ll> ans;
-    rep(i, n) {
+    // n <= 13
+    // -> 順列は6.2*10^9
+    // しかし実際は各桁0-9のいずれかではあるので、絶対に重複がある
+    // 2文字の重複が3つなら実際のターゲットは/8
+    // それでも7.8*10^8
+    // 制限は4secだが全部チェックは厳しいのでは？？
+    //
+    // 13桁なら最大が9を13個の数字であり、
+    // 平方根の最大は2162277
+    // ここまでの数字の2乗の構成数値が並び替えで作れるか確認すればいい
+
+    map<ll, ll> pool;
+    rep(i, s.length()) {
+        pool[s[i]-'0']++;
+    }
+
+    ll mx{0};
+    rrep(i, 10) {
+        rep(j, pool[i]) {
+            mx *= 10;
+            mx += i;
+        }
+    }
+    mx = (ll)sqrt(mx) + 1;
+
+    ll ans{0};
+    rep(i, mx+1) {
+        map<ll, ll> cnt;
+        ll t = i*i;
+        while(t) {
+            cnt[t%10]++;
+            t /= 10;
+        }
         bool ok{true};
-        if(td.length() == s[i].length()) {
-            ll df{0};
-            rep(j, td.length()) {
-                if(td[j] != s[i][j]) {
-                    if(df++ > 0) {
-                        ok = false;
-                        break;
-                    }
-                }
-            }
-        } else if(td.length()+1 == s[i].length()) {
-            ll df{-1};
-            rep(j, td.length()) {
-                if(td[j] != s[i][j]) {
-                    df = j;
-                    break;
-                }
-            }
-            if(df >= 0) {
-                srep(j, df, td.length()) {
-                    if(td[j] != s[i][j+1]) {
-                        ok = false;
-                        break;
-                    }
-                }
-            }
-        } else if(td.length() == s[i].length()+1) {
-            ll df{-1};
-            rep(j, td.length()) {
-                if(td[j] != s[i][j]) {
-                    df = j;
-                    break;
-                }
-            }
-            if(df >= 0) {
-                srep(j, df, s[i].length()) {
-                    if(td[j+1] != s[i][j]) {
-                        ok = false;
-                        break;
-                    }
-                }
-            }
-        } else {
+        if(cnt[0] > pool[0]) {
+            // 0については、pool側が余る分には、上位につけたと思えば良いのでOKとなる
             ok = false;
+        } else {
+            srep(j, 1, 10) {
+                if(cnt[j] != pool[j]) {
+                    ok = false;
+                    break;
+                }
+            }
         }
-        if(ok) {
-            ans.insert(i+1);
-        }
+        /* cout << i << " " << ok << endl; */
+        if(ok) ans++;
     }
-    cout << ans.size() << endl;
-    for(auto a : ans) {
-        cout << a << " ";
-    }
-    cout << endl;
+    cout << ans << endl;
 }

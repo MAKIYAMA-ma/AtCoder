@@ -61,67 +61,41 @@ int main() {
     cin.tie(nullptr); cout.tie(nullptr);
 
     Def(n);
-    string td;
+    string t;
+    cin >> t;
     vs s(n);
-    cin >> td;
     rep(i, n) cin >> s[i];
 
-    // 最大5*10^5文字
-    set<ll> ans;
+    // 各sについて、tの前から/後から何文字目までとれるかをカウント
+    // sの文字数の総和は5*10^5だから入るはず
+
+    vl fc(n, 0), bc(n, 0);
     rep(i, n) {
-        bool ok{true};
-        if(td.length() == s[i].length()) {
-            ll df{0};
-            rep(j, td.length()) {
-                if(td[j] != s[i][j]) {
-                    if(df++ > 0) {
-                        ok = false;
-                        break;
-                    }
-                }
+        ll ti{0};
+        rep(j, s[i].length()) {
+            if(t[ti] == s[i][j]) {
+                fc[i]++;
+                ti++;
             }
-        } else if(td.length()+1 == s[i].length()) {
-            ll df{-1};
-            rep(j, td.length()) {
-                if(td[j] != s[i][j]) {
-                    df = j;
-                    break;
-                }
-            }
-            if(df >= 0) {
-                srep(j, df, td.length()) {
-                    if(td[j] != s[i][j+1]) {
-                        ok = false;
-                        break;
-                    }
-                }
-            }
-        } else if(td.length() == s[i].length()+1) {
-            ll df{-1};
-            rep(j, td.length()) {
-                if(td[j] != s[i][j]) {
-                    df = j;
-                    break;
-                }
-            }
-            if(df >= 0) {
-                srep(j, df, s[i].length()) {
-                    if(td[j+1] != s[i][j]) {
-                        ok = false;
-                        break;
-                    }
-                }
-            }
-        } else {
-            ok = false;
-        }
-        if(ok) {
-            ans.insert(i+1);
+            if(ti > t.length()) break;
         }
     }
-    cout << ans.size() << endl;
-    for(auto a : ans) {
-        cout << a << " ";
+    rep(i, n) {
+        ll ti = t.length()-1;
+        rrep(j, s[i].length()) {
+            if(t[ti] == s[i][j]) {
+                bc[i]++;
+                ti--;
+            }
+            if(ti < 0) break;
+        }
     }
-    cout << endl;
+    sort(all(fc));
+    sort(all(bc));
+
+    ll ans{0};
+    rep(i, fc.size()) {
+        ans += (bc.end() - lower_bound(all(bc), t.length() - fc[i]));
+    }
+    cout << ans << endl;
 }
