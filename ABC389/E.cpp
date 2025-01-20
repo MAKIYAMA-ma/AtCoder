@@ -65,40 +65,55 @@ int main() {
     DefA(p, n);
 
 #if 1
-    ll l{0}, r{MAXLL+1};
+    // いくらまでの商品を全部買って大丈夫か探索
+    ll l{0}, r{m+1};
     while(r-l > 1) {
         ll mid = (l+r)/2;
-        ll t{0};
+        ull t{0};
         rep(i, n) {
-            ll nm = ((float)mid/p[i]-1)/2;
+            ull nm = (mid/p[i]+1)/2;
+            /* cout << "D1:" << " " << nm << " " << (nm*nm) << " " << p[i] << endl; */
+            if(nm > (sqrt((m-t)/p[i])+1)) {
+                t = MAXLL+1;
+                break;
+            }
             t += (nm*nm*p[i]);
-            if(t > MAXLL) break;
+            /* cout << "D2:" << t << endl; */
+            if(t > m) {
+                t = MAXLL+1;
+                break;
+            }
         }
+        /* cout << "DB2:" << mid << " " << t << endl; */
         if(t <= m) {
             l = mid;
         } else {
             r = mid;
         }
     }
+    /* cout << "DB1:" << l << endl; */
 
-    ll t{0};
-    ll ans{0};
-    priority_queue<ll, vl, greater<ll>> pq;
+    ull t{0};
+    ull ans{0};
+    priority_queue<ull, vector<ull>, greater<ull>> pq;
 
+    // 探索結果の金額まで全購入の場合、各商品幾つになるかカウント
     rep(i, n) {
-        ll nm = ((float)l/p[i]-1)/2;
+        ull nm = (l/p[i]+1)/2;
         t += (nm*nm*p[i]);
         ans += nm;
         pq.push((2*nm+1)*p[i]);
-        cout << nm << " ";
+        /* cout << nm << " "; */
     }
-    cout << endl;
-    cout << "DB:" << ans << " " << t << endl;
+    /* cout << endl; */
+    /* cout << "DB:" << ans << " " << t << endl; */
+
+    // 各商品の次の一個を、安い順に買えるだけ買う
     while(!pq.empty()) {
         auto tp = pq.top();
         pq.pop();
-        cout << m << " " << t << " " << tp << endl;
-        if(t+tp <= m) {
+        /* cout << m << " " << t << " " << tp << endl; */
+        if(tp <= (m-t)) {
             ans++;
             t += tp;
         } else {
