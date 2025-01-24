@@ -3,7 +3,7 @@
 using namespace std;
 using namespace atcoder;
 
-#if 0
+#if 1
 using mint = modint1000000007;
 #else
 using mint = modint998244353;
@@ -56,55 +56,44 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-mint Pow(mint x, ll n) {
-    mint ans = 1;
-    while(n > 0) {
-        if(n % 2) {
-            ans *= x;
-        }
-        x *= x;
-        n >>= 1;
-    }
-    return ans;
-}
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
-    Def(n);
-    Def(x);
-    vl t(n, 0);
-    ll mn{MAXLL};
-    rep(i, n) {
-        cin >> t[i];
-        mn = min(mn, t[i]);
-    }
-    mint ttl = Pow(n, x/mn+1);
+    Def2A(x, y, 3);
 
-    // n <= 10^3
-    // x <= 10^4
-    mint exp = 0;
-    vector<mint> dp(x+1, 0);
-    dp[0] = ttl;
-    rep(i, x+1) {
-        rep(j, n) {
-            if(i+t[j] <= x) {
-                dp[i+t[j]] += dp[i]/n;
-            } else {
-                if(j == 0) exp += dp[i]/n;
-            }
+    // (1) 荷物の移動距離
+    // (2) 移動方向の逆側に回り込むまでの距離（近いほう）
+    // (3) XY両方向移動必要なら、回り込む距離(+2)
+    //
+    // 荷物のXY軸それぞれの移動方向
+    ll xd{0}, yd{0};
+    if(x[2] > x[1]) xd = 1;
+    else if (x[2] < x[1]) xd = -1;
+    if(y[2] > y[1]) yd = 1;
+    else if (y[2] < y[1]) yd = -1;
+
+    ll ans{0};
+    // 荷物を移動させるための位置への移動距離
+    vl d = {abs(x[1]-xd - x[0]) + abs(y[1] - y[0]), abs(x[1] - x[0]) + abs(y[1]-yd - y[0])};
+    if(xd == 0) {
+        ans += d[1];
+        if(x[0] == x[1] && ((y[1]-y[0])*(-yd) > 0)) {
+            // 初期位置に移動するのに、荷物を回り込む必要がある
+            ans += 2;
         }
+    } else if(yd == 0) {
+        ans += d[0];
+        if(y[0] == y[1] && ((x[1]-x[0])*(-xd) > 0)) {
+            // 初期位置に移動するのに、荷物を回り込む必要がある
+            ans += 2;
+        }
+    } else {
+        // 移動位置の近いほうに最初に行き、移動後に他方の軸の移動を行うために2歩歩いて回り込む
+        ans += min(d[0], d[1])+2;
     }
+    // 荷物の移動距離
+    ans += (abs(x[2] - x[1]) + abs(y[2] - y[1]));
 
-    /* rep(i, x+1) { */
-    /*     cout << dp[i].val() << " "; */
-    /* } */
-    /* cout << endl; */
-    /* cout << exp.val() << " " << ttl.val() << endl; */
-
-    // 期待値modの計算
-    ll mod = 998244353;
-    ll denomi = inv_mod(ttl.val(), mod);
-    cout << (exp*denomi).val() << endl;
+    cout  << ans << endl;
 }

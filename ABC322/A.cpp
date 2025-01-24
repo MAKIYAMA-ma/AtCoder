@@ -3,7 +3,7 @@
 using namespace std;
 using namespace atcoder;
 
-#if 0
+#if 1
 using mint = modint1000000007;
 #else
 using mint = modint998244353;
@@ -56,55 +56,18 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-mint Pow(mint x, ll n) {
-    mint ans = 1;
-    while(n > 0) {
-        if(n % 2) {
-            ans *= x;
-        }
-        x *= x;
-        n >>= 1;
-    }
-    return ans;
-}
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
     Def(n);
-    Def(x);
-    vl t(n, 0);
-    ll mn{MAXLL};
-    rep(i, n) {
-        cin >> t[i];
-        mn = min(mn, t[i]);
-    }
-    mint ttl = Pow(n, x/mn+1);
-
-    // n <= 10^3
-    // x <= 10^4
-    mint exp = 0;
-    vector<mint> dp(x+1, 0);
-    dp[0] = ttl;
-    rep(i, x+1) {
-        rep(j, n) {
-            if(i+t[j] <= x) {
-                dp[i+t[j]] += dp[i]/n;
-            } else {
-                if(j == 0) exp += dp[i]/n;
-            }
+    string s;
+    cin >> s;
+    rep(i, n-2) {
+        if(!s.compare(i, 3, "ABC")) {
+            cout << (i+1) << endl;
+            return 0;
         }
     }
-
-    /* rep(i, x+1) { */
-    /*     cout << dp[i].val() << " "; */
-    /* } */
-    /* cout << endl; */
-    /* cout << exp.val() << " " << ttl.val() << endl; */
-
-    // 期待値modの計算
-    ll mod = 998244353;
-    ll denomi = inv_mod(ttl.val(), mod);
-    cout << (exp*denomi).val() << endl;
+    cout << -1 << endl;
 }

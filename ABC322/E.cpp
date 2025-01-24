@@ -3,7 +3,7 @@
 using namespace std;
 using namespace atcoder;
 
-#if 0
+#if 1
 using mint = modint1000000007;
 #else
 using mint = modint998244353;
@@ -56,8 +56,8 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-mint Pow(mint x, ll n) {
-    mint ans = 1;
+ll Pow(ll x, ll n) {
+    ll ans = 1;
     while(n > 0) {
         if(n % 2) {
             ans *= x;
@@ -73,38 +73,54 @@ int main() {
     cin.tie(nullptr); cout.tie(nullptr);
 
     Def(n);
-    Def(x);
-    vl t(n, 0);
-    ll mn{MAXLL};
+    Def(k);
+    Def(p);
+    vl c(n, 0);
+    vl2 a(n, vl(k, 0));
     rep(i, n) {
-        cin >> t[i];
-        mn = min(mn, t[i]);
+        cin >> c[i];
+        rep(j, k) cin >> a[i][j];
     }
-    mint ttl = Pow(n, x/mn+1);
 
-    // n <= 10^3
-    // x <= 10^4
-    mint exp = 0;
-    vector<mint> dp(x+1, 0);
-    dp[0] = ttl;
-    rep(i, x+1) {
-        rep(j, n) {
-            if(i+t[j] <= x) {
-                dp[i+t[j]] += dp[i]/n;
-            } else {
-                if(j == 0) exp += dp[i]/n;
+    // n <= 100
+    // p <= 5
+    // k <= 5
+    // 100bit全探索は当然無理
+    //
+    // 二分探索は？　-> x円以下でクリア可能かどうか簡単に判定できるか？
+    // 最小コスト流？
+    // DP
+    // 100*(5^5) = 312500 普通に間に合うのでは
+    ll st{0};
+    rep(i, k) {
+        st *= (p+1);
+        st += p;
+    }
+
+    vl cost(st+1, MAXLL);
+    vl costp(st+1, MAXLL);
+    cost[0] = 0;
+    rep(i, n) {
+        rep(j, st) {
+            costp[j] = cost[j];
+        }
+        rep(j, st) {
+            if(costp[j] >= MAXLL) continue;
+
+            ll nxt{0}, bs{1};
+            ll tmp = j;
+            rep(l, k) {
+                ll pt = min(tmp%(p+1) + a[i][l], p);
+                /* cout << pt << " "; */
+                nxt += pt*bs;
+                bs *= (p+1);
+                tmp /= (p+1);
             }
+            cost[nxt] = min(costp[j]+c[i], cost[nxt]);
+            /* cout << endl << "DB:" << j << " " << nxt << " " << cost[nxt] << endl; */
         }
     }
-
-    /* rep(i, x+1) { */
-    /*     cout << dp[i].val() << " "; */
-    /* } */
-    /* cout << endl; */
-    /* cout << exp.val() << " " << ttl.val() << endl; */
-
-    // 期待値modの計算
-    ll mod = 998244353;
-    ll denomi = inv_mod(ttl.val(), mod);
-    cout << (exp*denomi).val() << endl;
+    /* rep(i, st+1) cout << i << " " << cost[i] << endl; */
+    if(cost[st] == MAXLL) cost[st] = -1;
+    cout << cost[st] << endl;
 }
