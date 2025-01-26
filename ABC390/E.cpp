@@ -68,84 +68,49 @@ int main() {
     // 全ビタミンをa以上にするための最小カロリーは計算できる？
     Def(n);
     Def(x);
-    vl a1, c1, a2, c2, a3, c3;
+    vl2 a(3, vl()), c(3, vl());
     rep(i, n) {
         Def(v);
-        Def(a);
-        Def(c);
-        switch(v) {
-            case 1:
-                a1.push_back(a);
-                c1.push_back(c);
-                break;
-            case 2:
-                a2.push_back(a);
-                c2.push_back(c);
-                break;
-            case 3:
-                a3.push_back(a);
-                c3.push_back(c);
-                break;
-        }
+        Def(ta);
+        Def(tc);
+        a[v-1].push_back(ta);
+        c[v-1].push_back(tc);
     }
 
-    vl dp1(x+1), dp2(x+1), dp3(x+1);
-    vl pdp1(x+1), pdp2(x+1), pdp3(x+1);
-    rep(i, a1.size()) {
-        rep(j, dp1.size()) {
-            pdp1[j] = dp1[j];
-        }
-        rep(j, dp1.size()) {
-            if(j+c1[i] <= x) {
-                dp1[j+c1[i]] = max(pdp1[j]+a1[i], pdp1[j+c1[i]]);
+    vl2 dp(3, vl(x+1, 0)), pdp(3, vl(x+1, 0));
+    rep(i, 3) {
+        rep(j, a[i].size()) {
+            /* swap(dp[i], pdp[i]); */
+            rep(k, dp[i].size()) pdp[i][k] = dp[i][k];
+            rep(k, dp[i].size()) {
+                if(k+c[i][j] <= x) {
+                    dp[i][k+c[i][j]] = max({pdp[i][k]+a[i][j], dp[i][k+c[i][j]]});
+                }
             }
         }
     }
-    rep(i, a2.size()) {
-        rep(j, dp2.size()) {
-            pdp2[j] = dp2[j];
-        }
-        rep(j, dp2.size()) {
-            if(j+c2[i] <= x) {
-                dp2[j+c2[i]] = max(pdp2[j]+a2[i], pdp2[j+c2[i]]);
-            }
-        }
-    }
-    rep(i, a3.size()) {
-        rep(j, dp3.size()) {
-            pdp3[j] = dp3[j];
-        }
-        rep(j, dp3.size()) {
-            if(j+c3[i] <= x) {
-                dp3[j+c3[i]] = max(pdp3[j]+a3[i], pdp3[j+c3[i]]);
-            }
-        }
-    }
-    /* rep(i, dp1.size()) cout << dp1[i] << " "; */
+    /* rep(i, dp[0].size()) cout << dp[0][i] << " "; */
     /* cout << endl; */
-    /* rep(i, dp2.size()) cout << dp2[i] << " "; */
+    /* rep(i, dp[1].size()) cout << dp[1][i] << " "; */
     /* cout << endl; */
-    /* rep(i, dp3.size()) cout << dp3[i] << " "; */
+    /* rep(i, dp[2].size()) cout << dp[2][i] << " "; */
     /* cout << endl; */
 
     ll l{0}, r{MAXLL};
     while((r-l) > 1) {
         ll m = (l+r)/2;
-        auto lp1 = lower_bound(all(dp1), m) - dp1.begin();
-        auto lp2 = lower_bound(all(dp2), m) - dp2.begin();
-        auto lp3 = lower_bound(all(dp3), m) - dp3.begin();
-
+        ll cal{0};
+        rep(i, 3) {
+            cal += (lower_bound(all(dp[i]), m) - dp[i].begin());
+        }
         /* cout << "DB:" << m << " " << lp1+lp2+lp3 << endl; */
 
-        if((lp1+lp2+lp3) <= x) {
+        if(cal <= x) {
             l = m;
         } else {
             r = m;
         }
     }
 
-    auto v1 = *lower_bound(all(dp1), l);
-    auto v2 = *lower_bound(all(dp2), l);
-    auto v3 = *lower_bound(all(dp3), l);
-    cout << min({v1, v2, v3}) << endl;
+    cout << l << endl;
 }
