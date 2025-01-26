@@ -60,39 +60,33 @@ const int MINI = -1e9;
 void makeptn(vl &elm, set<ll> &ans, vl2 &ptn, ll index) {
     for(auto &st : ptn) {
         ll sum = reduce(all(st));
-        cout << sum << "(";
-        for(auto s: st) {
-            cout << s << ",";
-        }
-        cout << ") ";
+        /* cout << sum << "("; */
+        /* for(auto s: st) { */
+        /*     cout << s << ","; */
+        /* } */
+        /* cout << ") "; */
     }
-    cout << "::" << index << endl;
+    /* cout << "::" << index << endl; */
     if (index == elm.size()) {
         ll a{0};
         for(auto &st : ptn) {
             ll sum = reduce(all(st));
             a ^= sum;
-            cout << sum << "(";
-            for(auto s: st) {
-                cout << s << ",";
-            }
-            cout << ") ";
+            /* cout << sum << "("; */
+            /* for(auto s: st) { */
+            /*     cout << s << ","; */
+            /* } */
+            /* cout << ") "; */
         }
-        cout << "--->" << a << endl;
+        /* cout << "--->" << a << endl; */
         ans.insert(a);
         return;
     }
 
-    for (auto &g : ptn) {
-        g.push_back(elm[index]);
-        cout << "DB1:";
-        rep(i, g.size()) cout << g[i] << " ";
-        cout << endl;
+    rep(i, ptn.size()) {
+        ptn[i].push_back(elm[index]);
         makeptn(elm, ans, ptn, index + 1);
-        g.pop_back();
-        cout << "DB2:";
-        rep(i, g.size()) cout << g[i] << " ";
-        cout << endl;
+        ptn[i].pop_back();
     }
 
     ptn.push_back({elm[index]});
