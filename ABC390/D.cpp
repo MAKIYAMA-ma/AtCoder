@@ -57,21 +57,11 @@ const int MINI = -1e9;
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
 
-void makeptn(vl &elm, set<ll> &ans, vl2 &ptn, ll index) {
-    for(auto &st : ptn) {
-        ll sum = reduce(all(st));
-        /* cout << sum << "("; */
-        /* for(auto s: st) { */
-        /*     cout << s << ","; */
-        /* } */
-        /* cout << ") "; */
-    }
-    /* cout << "::" << index << endl; */
+void makeptn(vl &elm, unordered_set<ll> &ans, vl &ptn, ll index) {
     if (index == elm.size()) {
         ll a{0};
-        for(auto &st : ptn) {
-            ll sum = reduce(all(st));
-            a ^= sum;
+        for(auto st : ptn) {
+            a ^= st;
             /* cout << sum << "("; */
             /* for(auto s: st) { */
             /*     cout << s << ","; */
@@ -84,12 +74,12 @@ void makeptn(vl &elm, set<ll> &ans, vl2 &ptn, ll index) {
     }
 
     rep(i, ptn.size()) {
-        ptn[i].push_back(elm[index]);
+        ptn[i] += elm[index];
         makeptn(elm, ans, ptn, index + 1);
-        ptn[i].pop_back();
+        ptn[i] -= elm[index];
     }
 
-    ptn.push_back({elm[index]});
+    ptn.push_back(elm[index]);
     makeptn(elm, ans, ptn, index + 1);
     ptn.pop_back();
 }
@@ -105,10 +95,15 @@ int main() {
     // 繰り上がり方が何種類あるか
     //
     // 12個なら組みわけの方法は4*10^6ちょい
+    // 各組について、n個の要素を加算or排他的論理和なのでO(n)
     // 全網羅は可能
     //
-    set<ll> ans;
-    vl2 ptn;
+    // --> なぜかTLEした
+    // 4,213,597パターンについてO(n)で計算-> 5*10^7で問題ないはず。
+    // しかし時間制限は3secでこれをTLE。
+    // 要素の追加削除が結構重い？
+    unordered_set<ll> ans;
+    vl ptn;
     makeptn(a, ans, ptn, 0);
     cout << ans.size() << endl;
 }
