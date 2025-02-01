@@ -68,12 +68,14 @@ int main() {
     // 全ての列の最下段のセルのうち、一番下が落ちきるまで次は消えない
     // 各列のi段目を夫々まとめて管理
     vector<set<pl>> row(w, set<pl>());
-    ll mxy{0};
     rep(i, n) {
-        mxy = max(mxy, y[i]);
         row[x[i]-1].insert(make_pair(y[i]-1, i));
     }
-    mxy = min(mxy, n);
+    // 全列そろっているところまでしかチェックする必要ない
+    ll mxy{MAXLL};
+    rep(i, w) {
+        mxy = min(mxy, (ll)row[i].size());
+    }
     vl2 line(mxy, vl(w, -1));
     vl et(mxy, 0);
     rep(i, mxy) {
