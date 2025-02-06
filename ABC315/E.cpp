@@ -82,6 +82,7 @@ int main() {
 
     vl ans;
     set<ll> nd;
+    vb nc(n, false);
     queue<ll> q;
     queue<ll> cand;
     q.push(0);
@@ -89,17 +90,18 @@ int main() {
     while(!q.empty()) {
         auto tp = q.front();
         q.pop();
-        if(p[tp].size() == 0) {
-            /* cout << "DB:" << tp << endl; */
-            cand.push(tp);
-            nd.erase(tp);
-        } else {
-            for(auto v : p[tp]) {
-                if(nd.find(v) == nd.end()) {
-                    nd.insert(v);
-                    q.push(v);
-                }
+        for(auto v : p[tp]) {
+            if(nd.find(v) == nd.end()) {
+                nd.insert(v);
+                q.push(v);
+                nc[v] = true;
             }
+        }
+    }
+    rep(i, n) {
+        if(nc[i] && p[i].size() == 0) {
+            nd.erase(i);
+            cand.push(i);
         }
     }
 
