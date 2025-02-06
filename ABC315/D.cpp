@@ -79,6 +79,11 @@ int main() {
         }
     }
 
+    vector<map<ll, ll>> hmr(h, map<ll, ll>());
+    vector<map<ll, ll>> wmr(w, map<ll, ll>());
+    rep(i, h) hmr[i] = hm[i];
+    rep(i, w) wmr[i] = wm[i];
+
     bool cont{false};
     do {
         cont = false;
@@ -128,5 +133,56 @@ int main() {
             ans += nm;
         }
     }
-    cout << ans << endl;
+
+    cont = false;
+    do {
+        cont = false;
+        for(auto &m : wmr) {
+            if(m.size() == 1) {
+                auto [k, nm] = *m.begin();
+                /* cout << "DB2:" << k << " " << nm << endl; */
+                /* cout << "    " << m.size() << endl; */
+                if(nm > 1) {
+                    for(auto &mm : hmr) {
+                        if(mm[k] == 1) {
+                            mm.erase(k);
+                        } else if(mm[k] > 0) {
+                            mm[k]--;
+                        }
+                    }
+                    m.erase(k);
+                    /* cout << "    " << m.size() << endl; */
+                    cont = true;
+                }
+            }
+        }
+        for(auto &m : hmr) {
+            if(m.size() == 1) {
+                auto [k, nm] = *m.begin();
+                /* cout << "DB1:" << k << " " << nm << endl; */
+                /* cout << "    " << m.size() << endl; */
+                if(nm > 1) {
+                    for(auto &mm : wmr) {
+                        if(mm[k] == 1) {
+                            mm.erase(k);
+                        } else if(mm[k] > 0) {
+                            mm[k]--;
+                        }
+                    }
+                    m.erase(k);
+                    /* cout << "    " << m.size() << endl; */
+                    cont = true;
+                }
+            }
+        }
+    } while(cont);
+
+    ll ansr{0};
+    for(auto m : hmr) {
+        for(auto [k, nm] : m) {
+            ansr += nm;
+        }
+    }
+
+    cout << min(ans, ansr) << endl;
 }
