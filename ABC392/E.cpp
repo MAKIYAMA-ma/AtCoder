@@ -137,10 +137,13 @@ int main() {
         rtl.insert(uf.root(i));
     }
 
-    vl rtv;
+    vpl rtv2;
     for(auto v : rtl) {
-        rtv.push_back(v);
+        rtv2.push_back({mp[v].size(), v});
     }
+    sort(rall(rtv2));
+    vl rtv(rtv2.size());
+    rep(i, rtv2.size()) rtv[i] = rtv2[i].second;
 
     ll cnt{0};
     UnionFind uf2;
@@ -148,7 +151,7 @@ int main() {
     cout << rtv.size()-1 << endl;
     rep(i, rtv.size()) {
         for(auto e : mp[rtv[i]]) {
-            rep(j, rtv.size()) {
+            srep(j, i+1, rtv.size()) {
                 if(!uf2.same(i, j)) {
                     cout << e+1 << " " << b[e] << " " << rtv[j] << endl;
                     uf2.merge(i, j);
