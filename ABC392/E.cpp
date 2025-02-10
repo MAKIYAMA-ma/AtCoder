@@ -146,9 +146,32 @@ int main() {
     rep(i, rtv2.size()) rtv[i] = rtv2[i].second;
 
     ll cnt{0};
+    cout << rtv.size()-1 << endl;
+
+    queue<ll> und;
+    set<ll> nund;
+    srep(i, 1, rtv.size()) {
+        nund.insert(rtv[i]);
+    }
+    und.push(rtv[0]);
+
+#if 1
+    while(!und.empty()) {
+        auto uv = und.front();
+        und.pop();
+        for(auto e : mp[uv]) {
+            for(auto v : nund) {
+                cout << e+1 << " " << b[e] << " " << v << endl;
+                if(++cnt >= rtv.size()-1) return 0;
+                nund.erase(v);
+                und.push(v);
+                break;
+            }
+        }
+    }
+#else
     UnionFind uf2;
     uf2.init(rtv.size());
-    cout << rtv.size()-1 << endl;
     rep(i, rtv.size()) {
         for(auto e : mp[rtv[i]]) {
             srep(j, i+1, rtv.size()) {
@@ -161,4 +184,5 @@ int main() {
             }
         }
     }
+#endif
 }
