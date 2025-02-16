@@ -79,8 +79,53 @@ int main() {
     // aiの倍数がいるならそれは採用
     // とかいう細かい選別を各iでやるのは当然無理なんだろう
 
+#if 1
+    ll mx = *max_element(all(a));
+    vl cnt(mx+1), g(mx+1), ans(mx+1);
+    /* map<ll, ll> cnt, g, ans; */
+    rep(i, n) cnt[a[i]]++;
+    srep(i, 1, mx+1) {
+        for(ll j = i; j <= mx; j += i) {
+            g[i] += cnt[j];
+        }
+    }
+    srep(i, 1, mx+1) {
+        if(g[i] >= k) {
+            for(ll j = i; j <= mx; j += i) {
+                ans[j] = max(ans[j], i);
+            }
+        }
+    }
+    rep(i, n) {
+        cout << ans[a[i]] << endl;
+    }
+#elif 1
+    ll mx = *max_element(all(a));
+    vl2 predv = era(mx);
+    /* map<ll, ll> cnt, mp, ans; */
+    vl cnt(mx+1), mp(mx+1), ans(mx+1);
+    rep(i, n) cnt[a[i]]++;
+    /* for(auto [v, c] : cnt) { */
+    rep(i, mx+1) {
+        rep(j, predv[i].size()) {
+            mp[predv[i][j]] += cnt[i];
+        }
+    }
+    rep(i, mx+1) {
+        rrep(j, predv[i].size()) {
+            if(mp[predv[i][j]] >= k) {
+                ans[i] = predv[i][j];
+                break;
+            }
+        }
+    }
+    rep(i, n) {
+        cout << ans[a[i]] << endl;
+    }
+#else
     vl2 predv = era(*max_element(all(a)));
-    map<ll, ll> mp;
+    /* map<ll, ll> mp; */
+    vl mp(*max_element(all(a)));
     rep(i, n) {
         rep(j, predv[a[i]].size()) {
             mp[predv[a[i]][j]]++;
@@ -95,4 +140,5 @@ int main() {
             }
         }
     }
+#endif
 }
