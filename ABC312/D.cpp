@@ -56,27 +56,6 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-mint check(string &s, ll st, ll tl, vector<vector<mint>> &dp, vb2 &fin) {
-    if(fin[st][tl]) return dp[st][tl];
-    if(st > tl) {
-        dp[st][tl] = 0;
-    } else if(st == tl) {
-        dp[st][tl] = 1;
-    } else {
-        mint ans{0};
-        if(s[st] != ')') {
-            srep(i, st+1, tl) {
-                if(s[i] != '(') {
-                    ans += check(s, st+1, i, dp, fin) * check(s, i+1, tl, dp, fin);
-                }
-            }
-        }
-        dp[st][tl] = ans;
-    }
-    fin[st][tl] = true;
-    /* cout << "DB:" << st << " " << tl << " " << dp[st][tl].val() << endl; */
-    return dp[st][tl];
-}
 
 int main() {
     ios_base::sync_with_stdio(false);
@@ -85,15 +64,28 @@ int main() {
     string s;
     cin >> s;
     // s.length <= 3000
-    // 当然再帰だと思うのだが
     vector<vector<mint>> dp(s.length()+1, vector<mint>(s.length()+1, 0));
-    vb2 ac(s.length()+1, vb(s.length()+1, false));
-    cout << (check(s, 0, s.length(), dp, ac)).val() << endl;
-    /* rep(i, s.length()+1) { */
-    /*     cout << i << ":"; */
-    /*     rep(j, s.length()+1) { */
+    rep(i, dp.size()) dp[i][i] = 1;
+    srep(l, 2, s.length()+1) {
+        rep(i, s.length()-l+1) {
+            /* cout << "DB:" << i << " " << i+l << endl; */
+            if(s[i] != ')') {
+                srep(j, i+1, i+l) {
+                    /* cout << "   " << j << endl; */
+                    if(s[j] != '(') {
+                        dp[i][i+l] += dp[i+1][j]*dp[j+1][i+l];
+                    }
+                }
+            }
+        }
+    }
+    /* cout << "--------" << endl; */
+    /* rep(i, dp.size()) { */
+    /*     rep(j, dp[0].size()) { */
     /*         cout << dp[i][j].val() << " "; */
     /*     } */
     /*     cout << endl; */
     /* } */
+    /* cout << "--------" << endl; */
+    cout << dp[0][s.length()].val() << endl;
 }
