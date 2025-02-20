@@ -64,6 +64,31 @@ int main() {
     string s;
     cin >> s;
     // s.length <= 3000
+#if 1
+    ll sl = s.length();
+    vector<vector<mint>> dp(sl, vector<mint>(sl+1, 0));
+    rep(i, sl) {
+        if(s[i] != ')') {
+            for(ll j = 1; j-1 <= i; j++) {
+                dp[i][j] += ((i > 0)?dp[i-1][j-1]:1);
+            }
+        }
+        if(s[i] != '(') {
+            for(ll j = 0; j+1 <= i; j++) {
+                dp[i][j] += ((i > 0)?dp[i-1][j+1]:1);
+            }
+        }
+    }
+    /* cout << "--------" << endl; */
+    /* rep(i, dp.size()) { */
+    /*     rep(j, dp[0].size()) { */
+    /*         cout << dp[i][j].val() << " "; */
+    /*     } */
+    /*     cout << endl; */
+    /* } */
+    /* cout << "--------" << endl; */
+    cout << dp[sl-1][0].val() << endl;
+#else
     vector<vector<mint>> dp(s.length()+1, vector<mint>(s.length()+1, 0));
     rep(i, dp.size()) dp[i][i] = 1;
     srep(l, 2, s.length()+1) {
@@ -88,4 +113,5 @@ int main() {
     /* } */
     /* cout << "--------" << endl; */
     cout << dp[0][s.length()].val() << endl;
+#endif
 }
