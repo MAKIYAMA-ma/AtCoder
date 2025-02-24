@@ -56,8 +56,8 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-void dijkstra(vpl2 &graph, ll start, vl &cost) {
-    priority_queue<pl, vpl, greater<pl>> q;   // {cost, index}
+void dijkstra(vpi2 &graph, int start, vi &cost) {
+    priority_queue<pi, vpi, greater<pi>> q;   // {cost, index}
     cost.at(start) = 0;
     q.push(make_pair(0, start));
 
@@ -90,9 +90,9 @@ int main() {
     vs c(n);
     rep(i, n) cin >> c[i];
 
-    ll st = n*n;
-    vpl2 g(n*n+1, vpl());
-    vpl2 cr(26, vpl());
+    int st = n*n;
+    vpi2 g(n*n+1, vpi());
+    vpi2 cr(26, vpi());
     rep(i, n) {
         g[st].push_back({i*n+i, 0});
         rep(j, n) {
@@ -115,27 +115,27 @@ int main() {
             srep(k, j+1, cr[i].size()) {
                 auto [s1, g1] = cr[i][j];
                 auto [s2, g2] = cr[i][k];
-                g[s1*n+g2].push_back({g1*n+s2, 2});
-                g[s2*n+g1].push_back({g2*n+s1, 2});
+                g[g1*n+s2].push_back({s1*n+g2, 2});
+                g[g2*n+s1].push_back({s2*n+g1, 2});
             }
         }
     }
 
-    cout << "---------" << endl;
-    rep(i, g.size()) {
-        cout << i/n << "," << i%n << " : ";
-        rep(j, g[i].size()) {
-            cout << "(" << g[i][j].first/n << "," << g[i][j].first%n << "):" << g[i][j].second << " ";
-        }
-        cout << endl;
-    }
-    cout << "---------" << endl;
+    /* cout << "---------" << endl; */
+    /* rep(i, g.size()) { */
+    /*     cout << i/n << "," << i%n << " : "; */
+    /*     rep(j, g[i].size()) { */
+    /*         cout << "(" << g[i][j].first/n << "," << g[i][j].first%n << "):" << g[i][j].second << " "; */
+    /*     } */
+    /*     cout << endl; */
+    /* } */
+    /* cout << "---------" << endl; */
 
-    vl cost(n*n+1, MAXLL);
+    vi cost(n*n+1, MAXI);
     dijkstra(g, st, cost);
     rep(i, n) {
         rep(j, n) {
-            if(cost[i*n+j] == MAXLL) {
+            if(cost[i*n+j] == MAXI) {
                 cout << -1;
             } else {
                 cout << cost[i*n+j];
