@@ -114,8 +114,8 @@ int main() {
     vl cost(n*2, MAXLL);
     dijkstra(g, 0, cost);
     ll ans = min(cost[n-1], cost[n*2-1]);
-    vl cost2(n*2, MAXLL);
-    dijkstra(g, n, cost2);
-    ans = min({ans, x+cost2[n-1], x+cost2[n*2-1]});
+    /* vl cost2(n*2, MAXLL); */
+    /* dijkstra(g, n, cost2); */
+    /* ans = min({ans, x+cost2[n-1], x+cost2[n*2-1]}); */
     cout << ans << endl;
 }
