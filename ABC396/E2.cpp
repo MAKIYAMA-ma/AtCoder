@@ -75,6 +75,67 @@ int main() {
 
     rep(i, n) {
         if(a[i] != -1) continue;
+#if 1
+        set<ll> grp;
+        ll cst{0}, st{i};
+        a[i] = 0;
+        queue<ll> q;
+        q.push(i);
+        while(!q.empty()) {
+            auto tp = q.front();
+            q.pop();
+            for(auto [nxt, z] : cn[tp]) {
+                ll val = z^a[tp];
+                if(a[nxt] == -1) {
+                    a[nxt] = val;
+                    grp.insert(nxt);
+                    cst += val;
+                    q.push(nxt);
+                } else if(a[nxt] != val) {
+                    cout << -1 << endl;
+                    return 0;
+                }
+            }
+        }
+
+        for(auto v : grp) {
+            ll tmp{0};
+            a[v] = 0;
+            q.push(v);
+            while(!q.empty()) {
+                auto tp = q.front();
+                q.pop();
+                for(auto [nxt, z] : cn[tp]) {
+                    ll val = z^a[tp];
+                    if(a[nxt] != val) {
+                        a[nxt] = val;
+                        tmp += val;
+                        q.push(nxt);
+                    }
+                }
+            }
+            if(tmp < cst) {
+                cst = tmp;
+                st = v;
+            }
+        }
+
+        a[st] = 0;
+        q.push(st);
+        while(!q.empty()) {
+            auto tp = q.front();
+            q.pop();
+            for(auto [nxt, z] : cn[tp]) {
+                ll val = z^a[tp];
+                if(a[nxt] != val) {
+                    a[nxt] = val;
+                    grp.insert(nxt);
+                    cst += val;
+                    q.push(nxt);
+                }
+            }
+        }
+#else
         a[i] = 0;
         queue<ll> q;
         q.push(i);
@@ -92,6 +153,7 @@ int main() {
                 }
             }
         }
+#endif
     }
 
     rep(i, n) {
