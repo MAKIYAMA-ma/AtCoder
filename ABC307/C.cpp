@@ -105,33 +105,36 @@ int main() {
         rep(j, hwx[1]-(maxaw-minaw)) {
             rep(k, hwx[0]-(maxbh-minbh)) {
                 rep(l, hwx[1]-(maxbw-minbw)) {
+                    /* cout << i << " " << j << " " << k << " " << l << endl; */
                     bool err{false};
                     vl2 tx(hwx[0], vl(hwx[1], 0));
                     srep(m, minah, maxah+1) {
                         srep(n, minaw, maxaw+1) {
                             if(a[m][n] == '#') {
-                                if(i+m >= tx.size() || j+n >= tx[0].size()) {
+                                if(i+m-minah >= tx.size() || j+n-minaw >= tx[0].size()) {
                                     err = true;
                                     break;
                                 }
-                                tx[i+m][j+n] = 1;
+                                tx[i+m-minah][j+n-minaw] = 1;
                             }
                         }
                         if(err) break;
                     }
+                    /* cout << "DB5:" << err << endl; */
                     if(err) continue;
                     srep(m, minbh, maxbh+1) {
                         srep(n, minbw, maxbw+1) {
                             if(b[m][n] == '#') {
-                                if(k+m >= tx.size() || l+n >= tx[0].size()) {
+                                if(k+m-minbh >= tx.size() || l+n-minbw >= tx[0].size()) {
                                     err = true;
                                     break;
                                 }
-                                tx[k+m][l+n] = 1;
+                                tx[k+m-minbh][l+n-minbw] = 1;
                             }
                         }
                         if(err) break;
                     }
+                    /* cout << "DB6:" << err << endl; */
                     if(err) continue;
 
                     /* cout << "-------" << endl; */
@@ -141,6 +144,7 @@ int main() {
                     /*     } */
                     /*     cout << endl; */
                     /* } */
+                    /* cout << "-------" << endl; */
 
                     bool ans{true};
                     rep(m, tx.size()) {
