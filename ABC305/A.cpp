@@ -41,8 +41,6 @@ using vm2 = vector<vm>;
 #define YES(cond) cout << ((cond) ? "YES" : "NO") << endl;
 #define PrintD(val) cout << fixed << setprecision(15) << (val) << endl;
 #define Def(n) ll n; cin >> n;
-#define Def2(m, n) ll m, n; cin >> m >> n;
-#define Def3(l, m, n) ll l, m, n; cin >> l >> m >> n;
 #define DefA(a, n) vl a(n); rep(i, n) cin >> a[i];
 #define Def2A(a, b, n) vl a(n); vl b(n); rep(i, n) cin >> a[i] >> b[i];
 #define DefPA(a, n) vl a(n); rep(i, n) cin >> a[i].first >> a[i].second;
@@ -61,4 +59,13 @@ const int MINI = -1e9;
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
+
+    Def(n);
+    ll p1 = (n/5)*5;
+    ll p2 = ((n+5)/5)*5;
+    if(n-p1 < p2-n) {
+        cout << p1 << endl;
+    } else {
+        cout << p2 << endl;
+    }
 }

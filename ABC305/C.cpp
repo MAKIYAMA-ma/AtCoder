@@ -61,4 +61,28 @@ const int MINI = -1e9;
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
+
+    Def2(h, w);
+    vs s(h);
+    rep(i, h) cin >> s[i];
+    ll ulh{MAXLL}, ulw{MAXLL};
+    ll drh{0}, drw{0};
+    rep(i, h) {
+        rep(j, w) {
+            if(s[i][j] == '#') {
+                ulh = min(ulh, i);
+                ulw = min(ulw, j);
+                drh = max(drh, i);
+                drw = max(drw, j);
+            }
+        }
+    }
+    srep(i, ulh, drh+1) {
+        srep(j, ulw, drw+1) {
+            if(s[i][j] == '.') {
+                cout << i+1 << " " << j+1 << endl;
+                return 0;
+            }
+        }
+    }
 }

@@ -3,7 +3,7 @@
 using namespace std;
 using namespace atcoder;
 
-#if 1
+#if 0
 using mint = modint1000000007;
 #else
 using mint = modint998244353;
@@ -61,4 +61,49 @@ const int MINI = -1e9;
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
+
+    Def3(n, m, k);
+    vl2 edge(n, vl());
+    rep(i, m) {
+        Def2(a, b);
+        a--; b--;
+        edge[a].push_back(b);
+        edge[b].push_back(a);
+    }
+    Def2A(p, h, k);
+    // k,h <= n <= 2*10^5
+    // 各警備員からBFSとかだとO(n^2)になるのでTLE
+    // WarshallFloydとかやったらO(n^3)
+    //
+    // 全頂点から同時にBFSすればほぼO(n)に近いオーダーで行けるのでは？？
+
+    priority_queue<pl> pq;
+    vl wc(n, -1);
+    rep(i, k) {
+        wc[p[i]-1] = h[i];
+    }
+    rep(i, n) pq.push({wc[i], i});
+
+    vb fin(n, false);
+    set<ll> ans;
+    while(!pq.empty()) {
+        auto [w, idx] = pq.top();
+        pq.pop();
+
+        if(w < 0) break;
+        if(fin[idx]) continue;
+
+        ans.insert(idx);
+        fin[idx] = true;
+        for(auto v : edge[idx]) {
+            if(wc[v] < (w-1)) {
+                wc[v] = w-1;
+                pq.push({wc[v], v});
+            }
+        }
+    }
+
+    cout << ans.size() << endl;
+    for(auto v : ans) cout << v+1 << " ";
+    cout << endl;
 }

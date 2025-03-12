@@ -41,8 +41,6 @@ using vm2 = vector<vm>;
 #define YES(cond) cout << ((cond) ? "YES" : "NO") << endl;
 #define PrintD(val) cout << fixed << setprecision(15) << (val) << endl;
 #define Def(n) ll n; cin >> n;
-#define Def2(m, n) ll m, n; cin >> m >> n;
-#define Def3(l, m, n) ll l, m, n; cin >> l >> m >> n;
 #define DefA(a, n) vl a(n); rep(i, n) cin >> a[i];
 #define Def2A(a, b, n) vl a(n); vl b(n); rep(i, n) cin >> a[i] >> b[i];
 #define DefPA(a, n) vl a(n); rep(i, n) cin >> a[i].first >> a[i].second;
@@ -58,7 +56,20 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
+
+    vl p(7, 0);
+    p[1] = 3;
+    p[2] = p[1]+1;
+    p[3] = p[2]+4;
+    p[4] = p[3]+1;
+    p[5] = p[4]+5;
+    p[6] = p[5]+9;
+
+    char a, b;
+    cin >> a >> b;
+    cout << abs(p[a-'A'] - p[b-'A']) << endl;
 }
