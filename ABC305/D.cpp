@@ -58,28 +58,48 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
+typedef struct {
+    ll act;
+    bool slp;
+} ST_ST;
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
     Def(n);
-    DefA(a, n);
-
-    vl sl(a[n-1]+1);
-    bool s{false};
-    ll idx{1};
-    srep(i, 1, a[n-1]+1) {
-        sl[i] = sl[i-1];
-        if(s) sl[i]++;
-        while(idx < a.size() && i >= a[idx]) {
-            idx++;
-            s = !s;
-        }
+    map<ll, ST_ST> a;
+    bool slp{true};
+    ll ac{0};
+    ll pre{0};
+    rep(i, n) {
+        Def(tmp);
+        if(slp) ac += (tmp-pre);
+        slp = !slp;
+        a[tmp] = {ac, slp};
+        pre = tmp;
     }
+
+    /* cout << "------" << endl; */
+    /* for(auto [k, st] : a) { */
+    /*     cout << k << " " << st.act << "," << st.slp << endl; */
+    /* } */
+    /* cout << "------" << endl; */
 
     Def(q);
     rep(i, q) {
         Def2(l, r);
-        cout << sl[r]-sl[l] << endl;
+
+        // beginにはならないはずだからそこは省略
+        auto llb = prev(a.upper_bound(l));
+        auto rlb = prev(a.upper_bound(r));
+        ll ans = rlb->second.act - llb->second.act;
+        if(llb->second.slp) {
+            ans -= (l-llb->first);
+        }
+        if(rlb->second.slp) {
+            ans += (r-rlb->first);
+        }
+        cout << ans << endl;
     }
 }
