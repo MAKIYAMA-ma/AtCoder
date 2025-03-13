@@ -107,8 +107,8 @@ int main() {
         }
         if(!ok) {
             if(!st.empty()) {
-                auto nxt = st.top();
                 st.pop();
+                auto nxt = st.top();
                 cout << nxt << endl;
             } else {
                 // ありえないはず
