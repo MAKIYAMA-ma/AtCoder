@@ -15,6 +15,8 @@ using ull = unsigned long long;
 using pi = pair<int, int>;
 using pl = pair<ll, ll>;
 
+using sl = set<ll>;
+
 using vi = vector<int>;
 using vl = vector<ll>;
 using vpi = vector<pi>;
@@ -23,6 +25,7 @@ using vb = vector<bool>;
 using vd = vector<double>;
 using vm = vector<mint>;
 using vs = vector<string>;
+using vsl = vector<sl>;
 
 using vi2 = vector<vi>;
 using vl2 = vector<vl>;
