@@ -68,7 +68,8 @@ int main() {
 
     string s;
     cin >> s;
-    Def(n);
+    ull n;
+    cin >> n;
 
     // nのほうがビット数多ければ全て1が正解
     // nの方がビット数が少なければ、あふれた部分がすべて？ならこの部分をカット
@@ -79,71 +80,92 @@ int main() {
     // s=?, n=0があったら?->0で続行
     // s=?, n=1があったら微妙。以降で小さくできるならここは1にしたい
 
-    vector<char> nb;
-    while(n > 0) {
-        if(n % 2) {
-            nb.push_back('1');
-        } else {
-            nb.push_back('0');
-        }
-        n /= 2;
+    vl nb;
+    ull tmp = n;
+    while(tmp > 0) {
+        nb.push_back(tmp & 0x01);
+        tmp >>= 1;
     }
-    vector<char> ns;
+    vl ns;
     rep(i, s.length()) {
-        ns.push_back(s[i]);
+        if(s[i] == '?') {
+            ns.push_back(-1);
+        } else {
+            ns.push_back(s[i] - '0');
+        }
     }
     reverse(all(ns));
 
     ll df = nb.size()-ns.size();
     if(df > 0) {
-        rep(i, df) ns.push_back('0');
+        rep(i, df) ns.push_back(0);
     } else if(df < 0){
-        rep(i, -df) nb.push_back('0');
+        rep(i, -df) nb.push_back(0);
     }
 
-    ll mn{MAXLL};
+    /* cout << "---------" << endl; */
+    /* rrep(i, nb.size()) cout << nb[i]; */
+    /* cout << endl; */
+    /* cout << "---------" << endl; */
+    /* rrep(i, ns.size()) cout << ns[i]; */
+    /* cout << endl; */
+    /* cout << "---------" << endl; */
+
+    // nを作れるかチェック
+    bool sm{true};
     rep(i, nb.size()) {
-        if(ns[i] != '1' && nb[i] == '1') {
-            mn = i;
+        if(ns[i] >= 0 && ns[i] != nb[i]) {
+            sm = false;
             break;
         }
     }
+    if(sm) {
+        cout << n << endl;
+        return 0;
+    }
 
-    /* cout << "---------" << endl; */
-    /* rep(i, nb.size()) cout << nb[i]; */
-    /* cout << endl; */
-    /* cout << "---------" << endl; */
-    /* rep(i, ns.size()) cout << ns[i]; */
-    /* cout << endl; */
-    /* cout << "---------" << endl; */
-
+    // 作れないならn未満の最大値を探す
     bool clr{false};
+    ll lst1{-1};
+    stack<ll> st;
     rrep(i, nb.size()) {
-        if(ns[i] == '0' && nb[i] == '1') {
-            clr = true;
-        } else if(ns[i] == '1' && nb[i] == '0') {
-            cout << -1 << endl;
-            return 0;
-        } else if(ns[i] == '?') {
-            if(clr) {
-                ns[i] = '1';
-            } else {
-                if(nb[i] == '0' || i <= mn) {
-                    ns[i] = '0';
+        if(clr) {
+            if(ns[i] == -1) ns[i] = 1;
+        } else {
+            st.push(i);
+            if(ns[i] == 0 && nb[i] == 1) {
+                clr = true;
+            } else if(ns[i] == 1 && nb[i] == 0) {
+                if(lst1 != -1) {
+                    while(!st.empty()) {
+                        auto tp = st.top();
+                        st.pop();
+                        if(tp == lst1) {
+                            ns[tp] = 0;
+                            break;
+                        } else {
+                            ns[tp] = 1;
+                        }
+                    }
+                    clr = true;
                 } else {
-                    ns[i] = '1';
+                    cout << -1 << endl;
+                    return 0;
                 }
+            } else if(ns[i] == -1) {
+                ns[i] = nb[i];
+                if(ns[i]) lst1 = i;
             }
         }
     }
 
     /* cout << "---------" << endl; */
-    /* rep(i, ns.size()) cout << ns[i]; */
+    /* rrep(i, ns.size()) cout << ns[i]; */
     /* cout << endl; */
     /* cout << "---------" << endl; */
-    ll ans{0}, base{1};
+    ull ans{0}, base{1};
     rep(i, ns.size()) {
-        if(ns[i] == '1') ans += base;
+        ans += (base*ns[i]);
         base *= 2;
     }
     cout << ans << endl;
