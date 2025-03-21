@@ -103,6 +103,19 @@ int main() {
         rep(i, -df) nb.push_back(0);
     }
 
+    ll mn{MAXLL};
+    bool ls{false};
+    rep(i, nb.size()) {
+        if(ls) {
+            if(ns[i] != 1 && nb[i] == 1) {
+                mn = i;
+                break;
+            }
+        } else {
+            if(ns[i] == 1 && nb[i] == 0) ls = true;
+        }
+    }
+
     /* cout << "---------" << endl; */
     /* rrep(i, nb.size()) cout << nb[i]; */
     /* cout << endl; */
@@ -111,50 +124,23 @@ int main() {
     /* cout << endl; */
     /* cout << "---------" << endl; */
 
-    // nを作れるかチェック
-    bool sm{true};
-    rep(i, nb.size()) {
-        if(ns[i] >= 0 && ns[i] != nb[i]) {
-            sm = false;
-            break;
-        }
-    }
-    if(sm) {
-        cout << n << endl;
-        return 0;
-    }
-
-    // 作れないならn未満の最大値を探す
     bool clr{false};
-    ll lst1{-1};
-    stack<ll> st;
     rrep(i, nb.size()) {
         if(clr) {
             if(ns[i] == -1) ns[i] = 1;
         } else {
-            st.push(i);
             if(ns[i] == 0 && nb[i] == 1) {
                 clr = true;
             } else if(ns[i] == 1 && nb[i] == 0) {
-                if(lst1 != -1) {
-                    while(!st.empty()) {
-                        auto tp = st.top();
-                        st.pop();
-                        if(tp == lst1) {
-                            ns[tp] = 0;
-                            break;
-                        } else {
-                            ns[tp] = 1;
-                        }
-                    }
+                cout << -1 << endl;
+                return 0;
+            } else if(ns[i] == -1) {
+                if(i == mn) {
+                    ns[i] = 0;
                     clr = true;
                 } else {
-                    cout << -1 << endl;
-                    return 0;
+                    ns[i] = nb[i];
                 }
-            } else if(ns[i] == -1) {
-                ns[i] = nb[i];
-                if(ns[i]) lst1 = i;
             }
         }
     }
