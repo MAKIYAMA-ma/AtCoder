@@ -109,10 +109,13 @@ int main() {
         if(ls) {
             if(ns[i] != 1 && nb[i] == 1) {
                 mn = i;
-                break;
+                ls = false;
             }
         } else {
-            if(ns[i] == 1 && nb[i] == 0) ls = true;
+            if(ns[i] == 1 && nb[i] == 0) {
+                ls = true;
+                mn = MAXLL;
+            }
         }
     }
 
