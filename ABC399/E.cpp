@@ -68,6 +68,10 @@ int main() {
     Def(n);
     string s, t;
     cin >> s >> t;
+
+    // 一周する場合は別の文字に退避が必要
+    // その際、退避可能な文字がなければアウト
+
     map<char, char> pr;
     rep(i, n) {
         if(pr.find(s[i]) == pr.end()) {
@@ -79,9 +83,45 @@ int main() {
             }
         }
     }
+    vb ckd(26, false);
+    ll cnt{0};
+    for(auto [k, c] : pr) {
+        if(ckd[k-'a']) continue;
+
+        char cr = k;
+        vb cycle(26, false);
+        while(true) {
+            if(!cycle[cr-'a']) {
+                ckd[cr-'a'] = true;
+                cycle[cr-'a'] = true;
+                if(pr.find(cr) != pr.end() && cr != pr[cr]) {
+                    cr = pr[cr];
+                } else {
+                    break;
+                }
+            } else {
+                cnt++;
+                break;
+            }
+        }
+    }
+    if(cnt) {
+        bool ok{false};
+        rep(i, ckd.size()) {
+            if(!ckd[i]) {
+                ok = true;
+                break;
+            }
+        }
+        if(!ok) {
+            cout << -1 << endl;
+            return 0;
+        }
+    }
+
     ll ans{0};
     for(auto [k, c] : pr) {
         if(k != c) ans++;
     }
-    cout << ans << endl;
+    cout << ans+cnt << endl;
 }
