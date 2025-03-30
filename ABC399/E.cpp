@@ -85,13 +85,16 @@ int main() {
     }
     vb ckd(26, false);
     ll cnt{0};
+    vl af(26, 0);
     for(auto [k, c] : pr) {
+        af[c-'a'] = 1;
         if(ckd[k-'a']) continue;
 
         char cr = k;
         vb cycle(26, false);
         while(true) {
             if(!cycle[cr-'a']) {
+                if(ckd[cr-'a']) break;
                 ckd[cr-'a'] = true;
                 cycle[cr-'a'] = true;
                 if(pr.find(cr) != pr.end() && cr != pr[cr]) {
@@ -105,18 +108,10 @@ int main() {
             }
         }
     }
-    if(cnt) {
-        bool ok{false};
-        rep(i, ckd.size()) {
-            if(!ckd[i]) {
-                ok = true;
-                break;
-            }
-        }
-        if(!ok) {
-            cout << -1 << endl;
-            return 0;
-        }
+    if(cnt && (reduce(all(af)) == 26)) {
+        // サイクルがあるので退避が必要だが、退避する文字が余っていない
+        cout << -1 << endl;
+        return 0;
     }
 
     ll ans{0};
