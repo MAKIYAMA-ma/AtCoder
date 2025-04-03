@@ -61,6 +61,29 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
+pl check(string &a, ll k, ll ps) {
+    if(k == 0) {
+        return {a[ps-1]-'0', 1};
+    } else {
+        auto p1 = check(a, k-1, ps*3-2);
+        auto p2 = check(a, k-1, ps*3-1);
+        auto p3 = check(a, k-1, ps*3);
+        /* cout << k-1 << " " << ps*3-2 << " (" << p1.first << "," << p1.second << ")" << endl; */
+        /* cout << k-1 << " " << ps*3-1 << " (" << p2.first << "," << p2.second << ")" << endl; */
+        /* cout << k-1 << " " << ps*3 << " (" << p3.first << "," << p3.second << ")" << endl; */
+        if((p1.first == p2.first) && (p2.first == p3.first)) {
+            ll tp = (p1.second+p2.second+p3.second) - max({p1.second, p2.second, p3.second});
+            return {p1.first, tp};
+        } else if(p1.first == p2.first) {
+            return {p1.first, min(p1.second,p2.second)};
+        } else if(p2.first == p3.first) {
+            return {p2.first, min(p2.second,p3.second)};
+        } else if(p3.first == p1.first) {
+            return {p1.first, min(p1.second,p3.second)};
+        }
+    }
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
@@ -70,7 +93,7 @@ int main() {
     cin >> a;
     // n <= 13
     // -> 3^n <= 1.6*10^6
-    // 010 011 101
+    // 010011101
     // 011
     // 1
     // -> 011 or 101を0にする
@@ -78,4 +101,5 @@ int main() {
     // 000
     // 0
     // -> 4つ変更必要
+    cout << check(a, n, 1).second << endl;
 }
