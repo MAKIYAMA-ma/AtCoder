@@ -61,23 +61,19 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-// 1 以上 N 以下の整数が素数かどうかを返す
-// エラストスのふるい
-void Eratosthenes(vl &prm, ll N) {
-    vb isprime(N+1, true);
-
-    // 0, 1 は予めふるい落としておく
-    isprime[0] = isprime[1] = false;
-
-    // ふるい
-    for (int p = 2; p <= N; ++p) {
-        if (!isprime[p]) continue;
-
-        for (int q = p * 2; q <= N; q += p) {
-            isprime[q] = false;
+ll PrimeFactNum(ll n) {
+    sl prms;
+    ll tmp = n;
+    for(ll i = 2; i*i <= tmp; i++) {
+        // iが素数かどうかの判定は不要
+        // iが素数でないなら、iの約数による割り算がもっと前に完了している
+        while(tmp % i == 0) {
+            prms.insert(i);
+            tmp /= i;
         }
     }
-    rep(i, isprime.size()) prm.push_back(i);
+    if(tmp >= 2) prms.insert(tmp);
+    return prms.size();
 }
 
 int main() {
@@ -92,23 +88,18 @@ int main() {
     Def(q);
     DefA(a, q);
     // aの最大値までの400numberを洗い出せないだろうか
-    vl prm;
     ll mx = *max_element(all(a));
-    Eratosthenes(prm, mx);
-    sl t2;
-    rep(i, prm.size()) {
-        ll bs = i;
-        while(bs*bs <= mx) {
-            srep(j, i+1, prm.size()) {
-                ll cd = (bs+prm[j])*(bs+prm[j]);
-                if(cd <= mx) t2.insert(cd);
-                else break;
-            }
-            bs *= prm[i];
-        }
+
+    sl nm400;
+    srep(i, 6, sqrt(mx)+1) {
+        if(PrimeFactNum(i) == 2) nm400.insert(i*i);
     }
+
     rep(i, q) {
-        auto lp = upper_bound(all(t2), a[i]);
+        // setに二分探索をする場合、メンバ関数を使うとO(logN)
+        // しかし、upper_bound(all(nm400, a[i]))とするとO(N)になるらしい
+        // 構造が双方向の連結だからみたい
+        auto lp = nm400.upper_bound(a[i]);
         lp--;
         cout << *lp << endl;
     }
