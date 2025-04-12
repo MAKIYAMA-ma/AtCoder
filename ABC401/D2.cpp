@@ -71,17 +71,26 @@ int main() {
     string s;
     cin >> s;
 
+    ll mc{0};
+    // oが確定した位置の隣は.確定
     rep(i, n) {
         if(s[i] == '?') {
             if(i-1 >= 0 && s[i-1] == 'o') s[i] = '.';
             if(i+1 < n && s[i+1] == 'o') s[i] = '.';
+        }
+        if(s[i] == 'o') mc++;
+    }
+    // 確定したoで既に数がそろっているなら残りは全て.
+    if(mc == k) {
+        rep(i, n) {
+            if(s[i] == '?') s[i] = '.';
         }
     }
 
     ll cnt{0};
     bool q{false};
     ll qc{0};
-    bool od{false};
+    vl od;
     rep(i, n) {
         if (s[i] == '?') {
             if(!q) {
@@ -92,32 +101,39 @@ int main() {
             }
         } else {
             if(q) {
-                if(qc % 2) od = true;
+                if(qc % 2) {
+                    od.push_back(i-qc);
+                }
                 cnt += (qc+1)/2;
                 q = false;
                 qc = 0;
             }
             if(s[i] == 'o') cnt++;
         }
-        /* cout << i << " " << cnt << endl; */
     }
-    if(q) cnt += (qc+1)/2;
+    if(q) {
+        if(qc % 2) {
+            od.push_back(n-qc);
+        }
+        cnt += (qc+1)/2;
+    }
 
     /* cout << cnt << " " << k << endl; */
-    if(cnt == k && od) {
-        bool m{true};
-        rep(i, n) {
-            if(s[i] == '?') {
-                ll cnt{0};
-                ll vl = i;
-                while(s[vl] == '?') vl++;
+    /* cout << od.size() << endl; */
+    // ?の位置で最大限oを稼いでようやく条件到達なら、奇数個の?は最大限oを稼ぐ配置で確定
+    // 偶数個の場合は、最大個数oを入れる方法が複数あるので、どちらにせよ確定しない
+    if(cnt == k && od.size()) {
+        for(auto pt : od) {
+            bool m{true};
+            srep(i, pt, n) {
+                if(s[i] == '?') {
+                    s[i] = m?'o':'.';
+                    m = !m;
+                } else {
+                    break;
+                }
             }
         }
-        /* rep(i, n) { */
-        /*     if(s[i] == '?' && (i == 0 || s[i-1] != '?') && (i == n-1 || s[i+1] != '?')) { */
-        /*         s[i] = 'o'; */
-        /*     } */
-        /* } */
     }
     cout << s << endl;
 }
