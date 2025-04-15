@@ -70,6 +70,7 @@ int main() {
     Def3A(r, c, l, n);
 
     set<pair<ll, pl>> st, fn;
+    // O(n*2logn)
     rep(i, n) {
         st.insert({c[i], {r[i], i}});
         fn.insert({c[i]+l[i], {r[i], i}});
@@ -78,6 +79,7 @@ int main() {
     vsl cld(n, sl());
     set<pl, greater<pl>> odr;
     vb bs(n, true);
+    // O(2*n*3logn+nlogn)
     while(st.size() && fn.size()) {
         set<pl> add;
         ll nxt = min((st.size()?(st.begin()->first):MAXLL), (fn.size()?(fn.begin()->first):MAXLL));
@@ -108,6 +110,8 @@ int main() {
         }
     }
 
+    // ここがTLEする
+    // 他の個所もオーダーはともかくかなり非効率かもしれない
     vl ans(n, 0);
     priority_queue<pl> q;
     rep(i, n) if(bs[i]) q.push({0, i});
