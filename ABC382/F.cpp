@@ -62,6 +62,18 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
+// pkまでの最長パスをメモ化再帰でDP
+ll check(vsl &edge, ll pk, vl &ans) {
+    if(ans[pk] >= 0) return ans[pk];
+
+    ll ret = -1;
+    for(auto t : edge[pk]) {
+        ret = max(ret, check(edge, t, ans));
+    }
+    ans[pk] = ret + 1;
+    return ans[pk];
+}
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
@@ -80,7 +92,7 @@ int main() {
     set<pl, greater<pl>> odr;
     vb bs(n, true);
     // O(2*n*3logn+nlogn)
-    while(st.size() && fn.size()) {
+    while(st.size() || fn.size()) {
         set<pl> add;
         ll nxt = min((st.size()?(st.begin()->first):MAXLL), (fn.size()?(fn.begin()->first):MAXLL));
         while(st.size() && st.begin()->first == nxt) {
@@ -98,22 +110,43 @@ int main() {
                 it--;
                 auto prt = it;
                 it++;
-                cld[prt->second].insert(it->second);
-                bs[it->second] = true;
+                cld[it->second].insert(prt->second);
+                bs[prt->second] = false;
             }
             auto prt = it;
             it++;
             if(it != odr.end()) {
-                cld[prt->second].insert(it->second);
-                bs[it->second] = true;
+                cld[it->second].insert(prt->second);
+                bs[prt->second] = false;
             }
         }
     }
 
+#if 1
+    vl ans(n, -1);
+    rep(i, n) {
+        check(cld, i, ans);
+    }
+#else
     // ここがTLEする
     // 他の個所もオーダーはともかくかなり非効率かもしれない
     vl ans(n, 0);
-    priority_queue<pl> q;
+#if 1
+    set<pl> pq;
+    rep(i, n) if(bs[i]) pq.insert({0, i});
+    while(pq.size()) {
+        auto [tc, ti] = *pq.begin();
+        pq.erase(pq.begin());
+        if(tc < ans[ti]) continue;
+        for(auto cd : cld[ti]) {
+            if(ans[cd] < (tc+1)) {
+                ans[cd] = tc+1;
+                pq.insert({tc+1, cd});
+            }
+        }
+    }
+#else
+    priority_queue<pl, vpl, greater<pl>> q;
     rep(i, n) if(bs[i]) q.push({0, i});
     while(!q.empty()) {
         auto [tc, ti] = q.top();
@@ -126,5 +159,7 @@ int main() {
             }
         }
     }
+#endif
+#endif
     rep(i, n) cout << h-ans[i] << endl;
 }
