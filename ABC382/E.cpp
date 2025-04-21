@@ -15,6 +15,8 @@ using ull = unsigned long long;
 using pi = pair<int, int>;
 using pl = pair<ll, ll>;
 
+using sl = set<ll>;
+
 using vi = vector<int>;
 using vl = vector<ll>;
 using vpi = vector<pi>;
@@ -23,6 +25,7 @@ using vb = vector<bool>;
 using vd = vector<double>;
 using vm = vector<mint>;
 using vs = vector<string>;
+using vsl = vector<sl>;
 
 using vi2 = vector<vi>;
 using vl2 = vector<vl>;
@@ -41,8 +44,11 @@ using vm2 = vector<vm>;
 #define YES(cond) cout << ((cond) ? "YES" : "NO") << endl;
 #define PrintD(val) cout << fixed << setprecision(15) << (val) << endl;
 #define Def(n) ll n; cin >> n;
+#define Def2(m, n) ll m, n; cin >> m >> n;
+#define Def3(l, m, n) ll l, m, n; cin >> l >> m >> n;
 #define DefA(a, n) vl a(n); rep(i, n) cin >> a[i];
-#define Def2A(a, b, n) vl a(n); rep(i, n) cin >> a[i] >> b[i];
+#define Def2A(a, b, n) vl a(n); vl b(n); rep(i, n) cin >> a[i] >> b[i];
+#define Def3A(a, b, c, n) vl a(n); vl b(n); vl c(n); rep(i, n) cin >> a[i] >> b[i] >> c[i];
 #define DefPA(a, n) vl a(n); rep(i, n) cin >> a[i].first >> a[i].second;
 
 const ll MAXLL = 1e18;
@@ -56,40 +62,44 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-double NormalApproximation(const vd& pro, int n) {
-    // 期待値 (μ) と分散 (σ^2) を計算
-    double mean = 0.0, var = 0.0;
-    for (double p : pro) {
-        mean += p;
-        var += p * (1 - p);
-    }
-    double sigma = sqrt(var); // 標準偏差
+double check(vd &dp, vd &inc, ll id) {
+    if(id < 0) return 0.0;
+    if(dp[id] >= 0) return dp[id];
 
-    // 正規分布の近似
-    double normalization = 1.0 / (sqrt(2 * M_PI) * sigma); // 正規化係数
-    double exponent = -pow(n - mean, 2) / (2 * var);  // 指数部分
-    return normalization * exp(exponent);
+    double ans{0.0};
+    srep(i, 1, inc.size()) {
+        ans += (check(dp, inc, max(id-i, 0LL)))*inc[i];
+    }
+    ans++;
+    ans /= (1.0 - inc[0]);
+    dp[id] = ans;
+    return ans;
 }
+
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
 
-    Def(n);
-    Def(x);
+    Def2(n, x);
     DefA(p, n);
 
-    // 1パックに入っているレアの枚数の期待値はPiの総和ではないの？
-    // 50%と100%なら、1パック当たり1.5枚
-    // 1枚当たり1/1.5パック必要
-    // よって2枚ほしいなら2/1.5=1.33333パック必要ということ
-    // 超える分の補正は。。。？
-    vd per(n);
+    vd inc(n+1, 0);
+    inc[0] = 1.0;
     rep(i, n) {
-        per[i] = (double)100 / p[i];
+        double on = p[i]/100.0;
+        double zr = 1.0-on;
+        rrep(j, n) {
+            inc[j+1] = inc[j+1]*zr + inc[j]*on;
+        }
+        inc[0] *= zr;
     }
-    vd pos(n);
-    rep(i, n) {
-        pos[i] = NormalApproximation(per, i);
-    }
+    /* cout << "--------" << endl; */
+    /* rep(i, inc.size()) PrintD(inc[i]); */
+    /* cout << "--------" << endl; */
+
+    vd dp(x+1, -1);
+    dp[0] = 0;
+
+    PrintD(check(dp, inc, x));
 }
