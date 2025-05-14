@@ -75,6 +75,23 @@ int main() {
     // オレンジとバナナの区間 両者の数がb,c通り
     // バナナとブドウの区間　バナナの数がc通り
     // オレンジとバナナの配分を全網羅すると10^12
+#if 1
+    vm f(a+b+c+d, 1);
+    srep(i, 1, f.size()) f[i] = f[i-1]*i;
+    /* rep(i, f.size()) cout << f[i].val() << " "; */
+    /* cout << endl; */
+
+    mint ans{0};
+    rep(i, c+1) {
+        // リンゴ、オレンジ、バナナの区間
+        mint l = f[a+b+i]/(f[b]*f[a+i]);
+        // バナナ、ブドウの区間
+        mint r = f[c-i+d-1]/(f[c-i]*f[d-1]);
+        /* cout << i << ":" << l.val() << " " << r.val() << endl; */
+        ans += l*r;
+    }
+    cout << ans.val() << endl;
+#else
     ll mx = max({a, b, c, d});
     vm f(mx+1, 1);
     srep(i, 1, f.size()) f[i] = f[i-1]*i;
@@ -88,4 +105,5 @@ int main() {
         }
     }
     cout << ans.val() << endl;
+#endif
 }
