@@ -69,7 +69,7 @@ int main() {
     Def(n);
     DefA(a, n);
 
-    rrep(i, 201) {
+    rrep(i, n+1) {
         ll cnt{0};
         rep(j, n) {
             if(a[j] >= i) cnt++;
@@ -79,13 +79,4 @@ int main() {
             return 0;
         }
     }
-
-    /* sort(rall(a)); */
-    /* rep(i, n) { */
-    /*     if(a[i] <= i+1) { */
-    /*         cout << a[i] << endl; */
-    /*         return 0; */
-    /*     } */
-    /* } */
-    /* cout << n << endl; */
 }
