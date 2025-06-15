@@ -62,53 +62,31 @@ const int MINI = -1e9;
 /* const ll MAXLD = numeric_limits<long double>::max(); */
 /* const ll MINLD = numeric_limits<long double>::min(); */
 
-class UnionFind {
-    public:
-        vector<int> data;
+void dijkstra(vpl2 &graph, ll start, vl &cost) {
+    priority_queue<pl, vpl, greater<pl>> q;   // {cost, index}
+    cost.at(start) = 0;
+    q.push(make_pair(0, start));
 
-        void init(int n) {
-            data.resize(n, -1);
+    while(!q.empty()) {
+        auto from = q.top().second;
+        auto cst = q.top().first;
+        q.pop();
+
+        if(cost.at(from) < cst) {
+            // 取得した情報が古い（最短でない）
+            continue;
         }
+        rep(i, graph.at(from).size()) {
+            int to = graph.at(from).at(i).first;
+            ll nc = graph.at(from).at(i).second + cst;
 
-        int root(int idx) {
-            if(data.at(idx) == -1) {
-                return idx;
-            } else {
-                // 深さ圧縮
-                // ただし、同じグループの全要素の値が同じになるとは限らないので注意
-                // (idxより根に近い要素の値は書き換わるが、idxより下の要素の値は書き換わらない。
-                // その結果、2段にはなりうる。
-                return (data.at(idx) = root(data.at(idx)));
+            if(nc < cost.at(to)) {
+                cost.at(to) = nc;
+                q.push(make_pair(nc, to));
             }
         }
-
-        void merge(int a, int b) {
-            int ar, br;
-
-            if(a == b) {
-                return;
-            }
-
-            ar = root(a);
-            br = root(b);
-            if(ar != br) {
-                data.at(br) = ar;
-            }
-        }
-
-        bool same(int a, int b) {
-            int ar, br;
-
-            if(a == b) {
-                return true;
-            }
-
-            ar = root(a);
-            br = root(b);
-
-            return (ar == br);
-        }
-};
+    }
+}
 
 int main() {
     ios_base::sync_with_stdio(false);
@@ -118,98 +96,22 @@ int main() {
     // ビットごとに分けて、上のビットから確定していくべき
     // 閉路を複数周回するのは無意味。0or1周の2択。
 
-    UnionFind uf;
-    uf.init(n);
-    vpl2 mp(n, vpl());
+    vpl2 mp(n*1024, vpl());
     rep(i, m) {
         Def3(a, b, w);
         a--; b--;
-        mp[a].push_back({b, w});
-        uf.merge(a, b);
-    }
-    if(!uf.same(0, n-1)) {
-        cout << -1 << endl;
-        return 0;
+        rep(j, 1024) {
+            mp[a+j*n].push_back({b+(j^w)*n, 1});
+        }
     }
 
-    ll ans{0};
-    vb ar(n*2, true);
-    rrep(i, 11) {
-        UnionFind uf2;
-        vl2 mp2(n*2, vl());
-        vl2 mp2_r(n*2, vl());
-        uf2.init(n*2);
-        rep(j, m) {
-            for(auto [dst, w] : mp[j]) {
-                if(w & (1 << i)) {
-                    if(ar[j] && ar[dst+n]) {
-                        mp2[j].push_back(dst+n);
-                        mp2_r[dst+n].push_back(j);
-                        uf2.merge(j, dst+n);
-                    }
-                    if(ar[j+n] && ar[dst]) {
-                        mp2[j+n].push_back(dst);
-                        mp2_r[dst].push_back(j+n);
-                        uf2.merge(j+n, dst);
-                    }
-                } else {
-                    if(ar[j] && ar[dst]) {
-                        mp2[j].push_back(dst);
-                        mp2_r[dst].push_back(j);
-                        uf2.merge(j, dst);
-                    }
-                    if(ar[j+n] && ar[dst+n]) {
-                        mp2[j+n].push_back(dst+n);
-                        mp2_r[dst+n].push_back(j+n);
-                        uf2.merge(j+n, dst+n);
-                    }
-                }
-            }
+    vl cost(n*1024, MAXLL);
+    dijkstra(mp, 0, cost);
+    rep(i, 1024) {
+        if(cost[n-1+i*n] < MAXLL) {
+            cout << i << endl;
+            return 0;
         }
-        cout << "---------" << endl;
-        rep(j, n*2) {
-            cout << j << ":";
-            for(auto d: mp2[j]) cout << d << " ";
-            cout << endl;
-        }
-        cout << "---------" << endl;
-        if(uf2.same(0, n-1)) {
-            vb cn1(n*2, false);
-            vb cn2(n*2, false);
-            queue<ll> q;
-            q.push(0);
-            while(!q.empty()) {
-                auto tp = q.front();
-                q.pop();
-                cn1[tp] = true;
-                for(auto d : mp2[tp]) {
-                    q.push(d);
-                }
-            }
-            queue<ll> q2;
-            q2.push(n-1);
-            while(!q2.empty()) {
-                auto tp = q2.front();
-                q2.pop();
-                cn2[tp] = true;
-                for(auto d : mp2_r[tp]) {
-                    q2.push(d);
-                }
-            }
-            rep(j, n*2) {
-                if(!(cn1[j] && cn2[j])) {
-                    ar[j] = false;
-                }
-            }
-            rep(j, n*2) cout << cn1[j] << " ";
-            cout << endl;
-            rep(j, n*2) cout << cn2[j] << " ";
-            cout << endl;
-        } else {
-            ans |= (1 << i);
-        }
-        rep(j, n*2) cout << ar[j] << " ";
-        cout << endl;
     }
-    cout << ans << endl;
+    cout << -1 << endl;
 }
