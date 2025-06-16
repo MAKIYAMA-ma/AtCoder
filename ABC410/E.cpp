@@ -65,4 +65,33 @@ const int MINI = -1e9;
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr); cout.tie(nullptr);
+
+    Def3(n, h, m);
+    Def2A(a, b, n);
+
+    // i体倒した時点でHPがjである場合の残り最大MPを表すDP
+    // MPがプラスの要素が一つも作れなくなったらドボン
+    vl2 dp(n+1, vl(h+1, -1));
+    dp[0][h] = m;
+
+    rep(i, n) {
+        bool ok{false};
+        srep(j, a[i], h+1) {
+            if(dp[i][j] >= 0) {
+                ok = true;
+                dp[i+1][j-a[i]] = max(dp[i+1][j-a[i]], dp[i][j]);
+            }
+        }
+        rep(j, h+1) {
+            if(dp[i][j] >= b[i]) {
+                ok = true;
+                dp[i+1][j] = max(dp[i+1][j], dp[i][j]-b[i]);
+            }
+        }
+        if(!ok) {
+            cout << i << endl;
+            return 0;
+        }
+    }
+    cout << n << endl;
 }
