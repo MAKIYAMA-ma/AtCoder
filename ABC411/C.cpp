@@ -68,6 +68,28 @@ int main() {
 
     Def2(n, q);
     ll cnt{0};
+#if 1
+    vl bd(n+2, 0);
+    rep(i, q) {
+        Def(a);
+        if(bd[a] == 0) {
+            bd[a] = 1;
+            if(bd[a-1] == 0 && bd[a+1] == 0) {
+                cnt++;
+            } else if(bd[a-1] == 1 && bd[a+1] == 1) {
+                cnt--;
+            }
+        } else {
+            bd[a] = 0;
+            if(bd[a-1] == 0 && bd[a+1] == 0) {
+                cnt--;
+            } else if(bd[a-1] == 1 && bd[a+1] == 1) {
+                cnt++;
+            }
+        }
+        cout << cnt << endl;
+    }
+#else
     vl bd(n, 0);
     rep(i, q) {
         Def(a);
@@ -101,4 +123,5 @@ int main() {
         }
         cout << cnt << endl;
     }
+#endif
 }
